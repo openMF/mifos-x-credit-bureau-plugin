@@ -1,0 +1,5 @@
+.DS_Store
+/keys
+/.gradle
+build
+/.idea
