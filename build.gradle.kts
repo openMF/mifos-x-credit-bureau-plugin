@@ -27,6 +27,10 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
+	implementation("org.glassfish.jersey.core:jersey-server:3.1.5")
+	implementation("org.glassfish.jersey.containers:jersey-container-servlet:3.1.5")
+	implementation("org.glassfish.jersey.inject:jersey-hk2:3.1.5")
 	implementation("org.liquibase:liquibase-core")
 //	implementation("org.apache.fineract:fineract-provider:$fineractVersion:plain")
 

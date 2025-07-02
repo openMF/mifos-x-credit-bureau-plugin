@@ -15,33 +15,33 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
-public class CreditBureauConfigurationParam {
+public class CreditBureauRegistrationParam {
 
     private long creditBureauOrganizationParamId;
     private long creditBureauOrganizationId;
 
     // Map to store dynamic configuration parameters
-    protected Map<String, String> configParams = new HashMap<>();
+    protected Map<String, String> registrationParams = new HashMap<>();
 
-    public CreditBureauConfigurationParam(long creditBureauOrganizationParamId, long creditBureauOrganizationId) {
+    public CreditBureauRegistrationParam(long creditBureauOrganizationParamId, long creditBureauOrganizationId) {
         this.creditBureauOrganizationParamId = creditBureauOrganizationParamId;
         this.creditBureauOrganizationId = creditBureauOrganizationId;
     }
 
     public String getParam(String key) {
-        return configParams.get(key);
+        return registrationParams.get(key);
     }
 
-    public CreditBureauConfigurationParam setParam(String key, String value) {
-        configParams.put(key, value);
+    public CreditBureauRegistrationParam setParam(String key, String value) {
+        registrationParams.put(key, value);
         return this;
     }
 
     public Map<String, String> getAllParams() {
-        return new HashMap<>(configParams);
+        return new HashMap<>(registrationParams);
     }
 
-    public static CreditBureauConfigurationParam instance(final long creditBureauOrganizationId, final long creditBureauOrganizationParamId) {
-        return new CreditBureauConfigurationParam(creditBureauOrganizationId, creditBureauOrganizationParamId);
+    public static CreditBureauRegistrationParam instance(final long creditBureauOrganizationId, final long creditBureauOrganizationParamId) {
+        return new CreditBureauRegistrationParam(creditBureauOrganizationId, creditBureauOrganizationParamId);
     }
 }
