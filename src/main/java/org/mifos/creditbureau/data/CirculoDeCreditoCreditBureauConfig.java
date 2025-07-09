@@ -4,7 +4,7 @@ package org.mifos.creditbureau.data;
  * Example child class that extends CreditBureauConfigurationParam
  * to demonstrate how to implement specific credit bureau configurations.
  */
-public class CirculoDeCreditoCreditBureauConfig extends CreditBureauRegistrationParam {
+public class CirculoDeCreditoCreditBureauConfig extends CBRegisterParamsData {
     
     // Constants for parameter keys
     public static final String API_KEY = "apiKey";

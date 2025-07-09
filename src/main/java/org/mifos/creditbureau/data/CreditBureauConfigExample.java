@@ -8,7 +8,7 @@ public class CreditBureauConfigExample {
 
     public static void main(String[] args) {
         // Example 1: Using the parent class directly for a generic credit bureau
-        CreditBureauRegistrationParam genericConfig = new CreditBureauRegistrationParam(1L, 100L);
+        CBRegisterParamsData genericConfig = new CBRegisterParamsData(1L, 100L);
         genericConfig.setParam("username", "user123")
                     .setParam("password", "pass456")
                     .setParam("apiEndpoint", "https://api.generic-bureau.com")
@@ -40,7 +40,7 @@ public class CreditBureauConfigExample {
         
         // Example 4: Creating another type of credit bureau configuration
         // In a real application, you would create another child class for this
-        CreditBureauRegistrationParam anotherConfig = new CreditBureauRegistrationParam(4L, 400L);
+        CBRegisterParamsData anotherConfig = new CBRegisterParamsData(4L, 400L);
         anotherConfig.setParam("clientId", "client-123")
                     .setParam("clientSecret", "secret-456")
                     .setParam("grantType", "client_credentials")
