@@ -6,7 +6,6 @@ plugins {
 
 group = "org.mifos"
 version = "0.0.1-SNAPSHOT"
-val fineractVersion = "0.0.1129-2c0625f"
 
 java {
 	toolchain {
@@ -22,13 +21,25 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven {
+		url = uri("https://mifos.jfrog.io/artifactory/libs-release-local")
+	}
+}
+ext {
+	set("springCloudVersion", "2024.0.1")
+	set("fineractVersion", "0.0.1000-b80930b")
 }
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
+	implementation("org.glassfish.jersey.core:jersey-server:3.1.5")
+	implementation("org.glassfish.jersey.containers:jersey-container-servlet:3.1.5")
+	implementation("org.glassfish.jersey.inject:jersey-hk2:3.1.5")
 	implementation("org.liquibase:liquibase-core")
-//	implementation("org.apache.fineract:fineract-provider:$fineractVersion:plain")
+	implementation("org.apache.fineract:fineract-core:${project.ext["fineractVersion"]}")
+//	implementation("org.apache.fineract:fineract-provider:${project.ext["fineractVersion"]}:plain")
 
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 	compileOnly("org.projectlombok:lombok")
