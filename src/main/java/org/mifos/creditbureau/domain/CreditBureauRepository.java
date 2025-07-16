@@ -16,7 +16,6 @@ public interface CreditBureauRepository extends JpaRepository<CreditBureau, Long
                  // - findById(Long id)
                  // - findAll()
                  // - deleteById(Long id)
-                 // - and many more!
 
                  // You can also define custom query methods here if needed, e.g.:
                  // List<CreditCheck> findByStatus(String status);

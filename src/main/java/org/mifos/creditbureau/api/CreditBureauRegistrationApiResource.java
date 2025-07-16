@@ -14,8 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -39,8 +38,11 @@ public class CreditBureauRegistrationApiResource {
     @GET
     @Path("/{id}/configParams")
     //TODO: Complete this for later
-    public List<String> getConfigParams(Long organizationCreditBureauId) {        // Fetch the configuration parameters for the given ID
-        return new ArrayList<>();
+    public List<String> getConfigParams(@PathParam("id") Long organizationCreditBureauId) {        // Fetch the configuration parameters for the given ID
+        // Call the service layer to get the parameters DTO
+        List<String> creditBureauParamKeys = this.creditBureauRegistrationReadService.getCreditBureauParamKeys(organizationCreditBureauId);
+        return Objects.requireNonNullElse(creditBureauParamKeys, Collections.emptyList());
+
     }
 
     @POST

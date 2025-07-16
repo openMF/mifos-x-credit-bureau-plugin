@@ -3,53 +3,67 @@ package org.mifos.creditbureau.service;
 import lombok.AllArgsConstructor;
 import org.mifos.creditbureau.data.CBRegisterParamsData;
 import org.mifos.creditbureau.data.CreditBureauData;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+import org.mifos.creditbureau.domain.CBRegisterParamRepository;
+import org.mifos.creditbureau.domain.CBRegisterParams;
+import org.mifos.creditbureau.domain.CreditBureau;
+import org.mifos.creditbureau.domain.CreditBureauRepository;
+import org.mifos.creditbureau.mappers.CreditBureauMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class CreditBureauRegistrationReadImplService implements CreditBureauRegistrationReadService {
 
-    private final JdbcTemplate jdbcTemplate;
+    // Inject the JPA repository for CreditBureau entities
+    private final CreditBureauRepository creditBureauRepository;
+    private final CBRegisterParamRepository cbRegisterParamRepository;
+    // Inject the MapStruct mapper for converting between entities and DTOs
+    private final CreditBureauMapper creditBureauMapper;
+
 
     @Override
+    @Transactional(readOnly = true) // Use a read-only transaction for performance
     public CBRegisterParamsData getCreditBureauParams(Long creditBureauId) {
-        final String sql = "select id, parameter_name, parameter_value from m_credit_bureau_parameter where credit_bureau_id = ?";
-        return jdbcTemplate.queryForObject(sql, new CBRegisterParamsDataMapper(), creditBureauId);
+        return cbRegisterParamRepository.findById(creditBureauId)
+                .map(creditBureauMapper::toCBRegisterParamsData)
+                .orElse(null);
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<String> getCreditBureauParamKeys(Long creditBureauId) {
+        return cbRegisterParamRepository.findById(creditBureauId)
+                .map(params -> new ArrayList<>(params.getRegistrationParams().keySet()))
+                .orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Map<String, String> getRegistrationParamMap(Long creditBureauId) {
+        Optional<CBRegisterParams> cbParamOptional = cbRegisterParamRepository.findById(creditBureauId);
+
+        return cbParamOptional
+                .map(CBRegisterParams::getRegistrationParams)
+                .orElse(Collections.emptyMap());
+
+    }
+
+
+    @Override
+    @Transactional(readOnly = true) // Use a read-only transaction for performance
     public List<CreditBureauData> getAllCreditBureaus() {
-        final String sql = "select id, name, is_active, is_available, country from m_credit_bureau";
-        return jdbcTemplate.query(sql, new CreditBureauDataMapper());
+        // Fetch all CreditBureau entities from the database.
+        List<CreditBureau> creditBureaus = creditBureauRepository.findAll();
+
+        // Use Java Streams to map each CreditBureau entity to its corresponding DTO.
+        return creditBureaus.stream()
+                .map(creditBureauMapper::toCreditBureauData)
+                .collect(Collectors.toList());
     }
 
-    private static final class CreditBureauDataMapper implements RowMapper<CreditBureauData> {
-        @Override
-        public CreditBureauData mapRow(ResultSet rs, int rowNum) throws SQLException {
-            long id = rs.getLong("id");
-            String name = rs.getString("name");
-            boolean isActive = rs.getBoolean("is_active");
-            boolean isAvailable = rs.getBoolean("is_available");
-            String country = rs.getString("country");
-            return new CreditBureauData(id, name, isAvailable, isActive, country, null);
-        }
-    }
 
-    private static final class CBRegisterParamsDataMapper implements RowMapper<CBRegisterParamsData> {
-        @Override
-        public CBRegisterParamsData mapRow(ResultSet rs, int rowNum) throws SQLException {
-            CBRegisterParamsData paramsData = new CBRegisterParamsData();
-            paramsData.setId(rs.getLong("id"));
-            do {
-                paramsData.setParam(rs.getString("parameter_name"), rs.getString("parameter_value"));
-            } while (rs.next());
-            return paramsData;
-        }
-    }
 }

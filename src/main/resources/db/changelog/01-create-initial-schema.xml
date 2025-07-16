@@ -5,18 +5,18 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
-    <changeSet author="gemini" id="1">
-        <createTable tableName="m_credit_bureau">
+    <changeSet author="gemini-fix" id="1-fix-schema">
+        <createTable tableName="credit_bureau">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_active" type="boolean">
+            <column name="is_active" type="boolean" defaultValueBoolean="false">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_available" type="boolean">
+            <column name="is_available" type="boolean" defaultValueBoolean="false">
                 <constraints nullable="false"/>
             </column>
             <column name="country" type="varchar(255)">
@@ -25,21 +25,26 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="gemini" id="2">
-        <createTable tableName="m_credit_bureau_parameter">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
+    <changeSet author="gemini-fix" id="2-fix-schema">
+        <createTable tableName="cb_registration_params">
             <column name="credit_bureau_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_credit_bureau_parameter_credit_bureau" references="m_credit_bureau(id)"/>
-            </column>
-            <column name="parameter_name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="parameter_value" type="varchar(255)">
-                <constraints nullable="false"/>
+                <constraints primaryKey="true" nullable="false" foreignKeyName="fk_cb_params_credit_bureau" referencedTableName="credit_bureau" referencedColumnNames="id"/>
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet author="gemini-fix" id="3-fix-schema">
+        <createTable tableName="credit_bureau_registration_param_values">
+            <column name="param_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_param_values_cb_params" referencedTableName="cb_registration_params" referencedColumnNames="credit_bureau_id"/>
+            </column>
+            <column name="param_key" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="param_value" type="varchar(255)"/>
+        </createTable>
+
+        <addPrimaryKey tableName="credit_bureau_registration_param_values" columnNames="param_id, param_key"/>
     </changeSet>
 
 </databaseChangeLog>
