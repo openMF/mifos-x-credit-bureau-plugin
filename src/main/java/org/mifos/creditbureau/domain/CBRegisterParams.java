@@ -40,11 +40,6 @@ public class CBRegisterParams {
         return registrationParams.get(key);
     }
 
-    public CBRegisterParams setParam(String key, String value) {
-        registrationParams.put(key, value);
-        return this;
-    }
-
     public Map<String, String> getAllParams() {
         return new HashMap<>(registrationParams);
     }

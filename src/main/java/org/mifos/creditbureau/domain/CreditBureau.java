@@ -22,7 +22,7 @@ public class CreditBureau {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(mappedBy = "credit_bureau", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "creditBureau", cascade = CascadeType.ALL, orphanRemoval = true)
     @PrimaryKeyJoinColumn
     private CBRegisterParams creditBureauParameter;
 
