@@ -5,7 +5,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
-    <changeSet author="gemini-fix" id="1-fix-schema">
+    <changeSet author="yuwatinyi" id="1-fix-schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="credit_bureau"/>
+            </not>
+        </preConditions>
         <createTable tableName="credit_bureau">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -25,7 +30,12 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="gemini-fix" id="2-fix-schema">
+    <changeSet author="yuwatinyi" id="2-fix-schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="cb_registration_params"/>
+            </not>
+        </preConditions>
         <createTable tableName="cb_registration_params">
             <column name="credit_bureau_id" type="bigint">
                 <constraints primaryKey="true" nullable="false" foreignKeyName="fk_cb_params_credit_bureau" referencedTableName="credit_bureau" referencedColumnNames="id"/>
@@ -33,7 +43,12 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="gemini-fix" id="3-fix-schema">
+    <changeSet author="yuwatinyi" id="3-fix-schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="credit_bureau_registration_param_values"/>
+            </not>
+        </preConditions>
         <createTable tableName="credit_bureau_registration_param_values">
             <column name="param_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_param_values_cb_params" referencedTableName="cb_registration_params" referencedColumnNames="credit_bureau_id"/>

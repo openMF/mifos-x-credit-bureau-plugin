@@ -22,6 +22,7 @@ public interface CreditBureauMapper {
     @Mapping(source = "creditBureauParameter", target = "cbRegisterParamsData")
     CreditBureauData toCreditBureauData(CreditBureau creditBureau);
     //DTO to entity
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "cbRegisterParamsData", target = "creditBureauParameter")
     CreditBureau toCreditBureau(CreditBureauData creditBureauData);
 

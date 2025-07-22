@@ -39,6 +39,7 @@ dependencies {
 	implementation("org.glassfish.jersey.inject:jersey-hk2:3.1.5")
 	implementation("org.liquibase:liquibase-core")
 	implementation("org.mapstruct:mapstruct:1.6.3")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 
 	implementation("org.apache.fineract:fineract-core:${project.ext["fineractVersion"]}")
 //	implementation("org.apache.fineract:fineract-provider:${project.ext["fineractVersion"]}:plain")

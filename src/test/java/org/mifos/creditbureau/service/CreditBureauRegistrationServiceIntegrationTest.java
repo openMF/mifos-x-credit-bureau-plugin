@@ -12,14 +12,13 @@ import org.mifos.creditbureau.domain.CreditBureauRepository;
 import org.mifos.creditbureau.mappers.CreditBureauMapper;
 import org.mifos.creditbureau.mappers.CreditBureauMapperImpl;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@Import({CreditBureauRegistrationWriteImplServiceImpl.class, CreditBureauRegistrationReadImplService.class, CreditBureauMapperImpl.class})
+@Import({CreditBureauRegistrationWriteServiceImpl.class, CreditBureauRegistrationReadImplService.class, CreditBureauMapperImpl.class})
 class CreditBureauRegistrationServiceIntegrationTest {
 
     @Autowired
@@ -33,6 +32,40 @@ class CreditBureauRegistrationServiceIntegrationTest {
 
     @Autowired
     private CreditBureauMapper mapper;
+
+    @Test
+    void canCreateCreditBureau(){
+        //Setup
+        CreditBureauData creditBureauData = CreditBureauData.builder()
+                .creditBureauName("Test Bureau")
+                .country("United States")
+                .isAvailable(true)
+                .isActive(true)
+                .build();
+
+        //Test Create CreditBureau
+        CreditBureau savedBureau = writeService.createCreditBureau(creditBureauData);
+        Long bureauId = savedBureau.getId();
+
+        //Test get all Credit Bureau
+        List<CreditBureauData> creditBureauDataList = readService.getAllCreditBureaus();
+
+        //Test if CB Registration Param, empty hashmap is created
+        CBRegisterParamsData cbRegisterParamsData = readService.getCreditBureauParams(bureauId);
+
+
+        //expected
+        assertNotNull(creditBureauDataList);
+        assertEquals(1, creditBureauDataList.size());
+        assertEquals("Test Bureau", creditBureauDataList.getFirst().getCreditBureauName());
+        assertEquals("United States", creditBureauDataList.getFirst().getCountry());
+
+        //expected for CB Registration Param
+        assertNotNull(cbRegisterParamsData);
+        assertEquals(0, cbRegisterParamsData.getRegistrationParams().size());
+
+
+    }
 
     @Test
     void shouldWriteAndReadCreditBureauParams() {

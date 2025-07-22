@@ -52,7 +52,6 @@ public class CreditBureauRegistrationReadImplService implements CreditBureauRegi
 
     }
 
-
     @Override
     @Transactional(readOnly = true) // Use a read-only transaction for performance
     public List<CreditBureauData> getAllCreditBureaus() {

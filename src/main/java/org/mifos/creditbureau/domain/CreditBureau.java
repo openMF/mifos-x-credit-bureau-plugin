@@ -22,21 +22,20 @@ public class CreditBureau {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(mappedBy = "creditBureau", cascade = CascadeType.ALL, orphanRemoval = true)
-    @PrimaryKeyJoinColumn
-    private CBRegisterParams creditBureauParameter;
-
     @Column(name = "name", nullable = false)
     private String creditBureauName;
 
     @Column(name = "is_available")
-    private boolean isAvailable;
+    private boolean available;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean active;
 
     @Column(name = "country")
     private String country;
+
+    @OneToOne(mappedBy = "creditBureau", cascade = CascadeType.ALL, orphanRemoval = true)
+    private CBRegisterParams creditBureauParameter;
 
 
 

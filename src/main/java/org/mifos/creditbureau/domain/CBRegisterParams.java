@@ -36,12 +36,5 @@ public class CBRegisterParams {
     @Column(name = "param_value")
     private Map<String, String> registrationParams = new HashMap<>();
 
-    public String getParam(String key) {
-        return registrationParams.get(key);
-    }
-
-    public Map<String, String> getAllParams() {
-        return new HashMap<>(registrationParams);
-    }
 
 }
