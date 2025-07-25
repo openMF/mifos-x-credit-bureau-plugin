@@ -1,47 +1,22 @@
 package org.mifos.creditbureau.data;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.experimental.Accessors;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Accessors(chain = true)
+@Getter
+@Builder(toBuilder = true)
 public class CreditBureauData {
 
-    private long id;
+    private final long id;
 
-    private String creditBureauName;
+    private final String creditBureauName;
 
-    private boolean isAvailable;
+    private final boolean available;
 
-    private boolean isActive;
+    private final boolean active;
 
-    private String country;
+    private final String country;
 
-    private CBRegisterParamsData cbRegisterParamsData;
-
-    public static CreditBureauData instance(
-            final long cbParamsId,
-            final long id,
-            final String creditBureauName,
-            final boolean isAvailable,
-            final boolean isActive,
-            final String country
-            ){
-
-        CBRegisterParamsData params = new CBRegisterParamsData()
-                .setId(cbParamsId);
-
-        return new CreditBureauData()
-                .setId(id)
-                .setCreditBureauName(creditBureauName)
-                .setAvailable(isAvailable)
-                .setActive(isActive)
-                .setCountry(country)
-                .setCbRegisterParamsData(params);
-    }
+    private final CBRegisterParamsData cbRegisterParamsData;
 
 }

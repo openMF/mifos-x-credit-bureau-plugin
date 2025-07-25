@@ -38,14 +38,21 @@ dependencies {
 	implementation("org.glassfish.jersey.containers:jersey-container-servlet:3.1.5")
 	implementation("org.glassfish.jersey.inject:jersey-hk2:3.1.5")
 	implementation("org.liquibase:liquibase-core")
+	implementation("org.mapstruct:mapstruct:1.6.3")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+
 	implementation("org.apache.fineract:fineract-core:${project.ext["fineractVersion"]}")
 //	implementation("org.apache.fineract:fineract-provider:${project.ext["fineractVersion"]}:plain")
 
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 	compileOnly("org.projectlombok:lombok")
+
 	annotationProcessor("org.projectlombok:lombok")
+	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testRuntimeOnly("com.h2database:h2")
 	testRuntimeOnly("com.h2database:h2")
 }
 

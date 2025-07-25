@@ -11,13 +11,13 @@ import java.util.Optional;
  */
 @Repository
 public interface CreditBureauRepository extends JpaRepository<CreditBureau, Long> {
-    
+         // By extending JpaRepository, you automatically get methods like:
+                 // - save(CreditCheck entity)
+                 // - findById(Long id)
+                 // - findAll()
+                 // - deleteById(Long id)
 
-    Optional<CreditBureau> findByCreditBureauName(String name);
+                 // You can also define custom query methods here if needed, e.g.:
+                 // List<CreditCheck> findByStatus(String status);
 
-    List<CreditBureau> findByIsActiveTrue();
-
-    List<CreditBureau> findByIsAvailableTrue();
-
-    List<CreditBureau> findByCountry(String country);
 }
