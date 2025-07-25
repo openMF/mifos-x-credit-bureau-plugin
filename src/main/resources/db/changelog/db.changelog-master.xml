@@ -6,6 +6,6 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
     <!-- Include future changelog files here -->
-    <!-- <include file="db/changelog/changes/01-create-initial-schema.xml"/> -->
+     <include file="01-create-initial-schema.xml" relativeToChangelogFile="true"/>
     
 </databaseChangeLog>
