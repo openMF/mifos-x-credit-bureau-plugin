@@ -10,7 +10,7 @@ import org.mifos.creditbureau.data.CBRegisterParamsData;
 import org.mifos.creditbureau.domain.CreditBureau;
 import org.mifos.creditbureau.domain.CreditBureauRepository;
 import org.mifos.creditbureau.mappers.CreditBureauMapper;
-import org.mifos.creditbureau.mappers.CreditBureauMapperImpl;
+
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +18,8 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@Import({CreditBureauRegistrationWriteServiceImpl.class, CreditBureauRegistrationReadImplService.class, CreditBureauMapperImpl.class})
+@Import({CreditBureauRegistrationWriteServiceImpl.class, CreditBureauRegistrationReadImplService.class, 
+        EncryptionService.class, org.mifos.creditbureau.config.BouncyCastleConfig.class, CreditBureauMapper.class})
 class CreditBureauRegistrationServiceIntegrationTest {
 
     @Autowired
@@ -39,8 +40,8 @@ class CreditBureauRegistrationServiceIntegrationTest {
         CreditBureauData creditBureauData = CreditBureauData.builder()
                 .creditBureauName("Test Bureau")
                 .country("United States")
-                .isAvailable(true)
-                .isActive(true)
+                .available(true)
+                .active(true)
                 .build();
 
         //Test Create CreditBureau
