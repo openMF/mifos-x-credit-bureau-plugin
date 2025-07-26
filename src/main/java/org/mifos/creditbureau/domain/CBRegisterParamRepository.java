@@ -11,8 +11,5 @@ import java.util.Optional;
 @Repository
 public interface CBRegisterParamRepository extends JpaRepository<CBRegisterParams, Long> {
 
-    Optional<CBRegisterParams> findById(Long creditBureauId);
-
-
 
 }
