@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Entity representing a Credit Bureau Organization.
  */
@@ -25,9 +28,6 @@ public class CreditBureau {
     @Column(name = "name", nullable = false)
     private String creditBureauName;
 
-    @Column(name = "is_available")
-    private boolean available;
-
     @Column(name = "is_active")
     private boolean active;
 
@@ -36,7 +36,6 @@ public class CreditBureau {
 
     @OneToOne(mappedBy = "creditBureau", cascade = CascadeType.ALL, orphanRemoval = true)
     private CBRegisterParams creditBureauParameter;
-
 
 
 }

@@ -18,7 +18,6 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class CBRegisterParams {
 
     @Id

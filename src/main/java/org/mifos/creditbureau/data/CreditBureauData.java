@@ -5,13 +5,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @Builder(toBuilder = true)
 @AllArgsConstructor
 public class CreditBureauData {
 
-    private final long id;
+    @Builder.Default
+    private final long id = 0;
 
     private final String creditBureauName;
 
@@ -21,6 +24,7 @@ public class CreditBureauData {
 
     private final String country;
 
-    private final CBRegisterParamsData creditBureauParameter;
+    private final Set<String> registrationParamKeys;
+
 
 }
