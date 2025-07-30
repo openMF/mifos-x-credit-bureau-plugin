@@ -14,7 +14,8 @@ import java.util.Map;
 @Builder(toBuilder = true) // toBuilder=true allows you to create a modified copy
 public class CBRegisterParamsData {
 
-    private final long id;
+    @Builder.Default
+    private final long id = 0;
 
     // Map to store dynamic configuration parameters
     @Singular // Lombok will generate a method to add one item at a time

@@ -71,8 +71,8 @@ public class CreditBureauRegistrationApiResource {
     @POST
     @Path("/{id}/configure")
     //Enter the values of the API key into the dto
-    public ResponseEntity<CBRegisterParams> configureCreditBureauParams(@RequestBody CBRegisterParamsData cbRegisterParamsData) {
-        CBRegisterParams createdCBParams = creditBureauRegistrationWriteService.configureCreditBureauParams(cbRegisterParamsData);
+    public ResponseEntity<CBRegisterParams> configureCreditBureauParams(@RequestBody Long id, CBRegisterParamsData cbRegisterParamsData) {
+        CBRegisterParams createdCBParams = creditBureauRegistrationWriteService.configureCreditBureauParamsValues(id, cbRegisterParamsData);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCBParams);
     }
 }
