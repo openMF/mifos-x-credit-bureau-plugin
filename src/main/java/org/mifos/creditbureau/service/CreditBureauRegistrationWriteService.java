@@ -1,5 +1,4 @@
 package org.mifos.creditbureau.service;
-import org.apache.fineract.infrastructure.core.data.CommandProcessingResult;
 import org.mifos.creditbureau.data.CBRegisterParamsData;
 import org.mifos.creditbureau.data.CreditBureauData;
 import org.mifos.creditbureau.domain.CBRegisterParams;
@@ -11,8 +10,11 @@ public interface CreditBureauRegistrationWriteService {
     //create a credit bureau
     CreditBureau createCreditBureau(CreditBureauData creditBureauData);
 
+    //add param keys to Credit Bureau
+    void configureCreditBureauParamsKeys(Long id, CBRegisterParamsData cbRegisterParamsData);
+
     //createCreditBureauConfiguration
-    CBRegisterParams configureCreditBureauParams(CBRegisterParamsData cbRegisterParamsData);
+    CBRegisterParams configureCreditBureauParamsValues(Long id,CBRegisterParamsData cbRegisterParamsData);
 
     //createCreditBureauRegistrationParam
     void updateCreditBureau();

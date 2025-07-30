@@ -1,5 +1,9 @@
 package org.mifos.creditbureau.service;
 
+import jakarta.annotation.PostConstruct;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mifos.creditbureau.data.CreditBureauData;
 import org.mifos.creditbureau.domain.CBRegisterParams;
@@ -12,13 +16,12 @@ import org.mifos.creditbureau.domain.CreditBureauRepository;
 import org.mifos.creditbureau.mappers.CreditBureauMapper;
 
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+//Tests look super messy
 @DataJpaTest
-@Import({CreditBureauRegistrationWriteServiceImpl.class, CreditBureauRegistrationReadImplService.class, 
+@Import({CreditBureauRegistrationWriteServiceImpl.class, CreditBureauRegistrationReadImplService.class,
         EncryptionService.class, org.mifos.creditbureau.config.BouncyCastleConfig.class, CreditBureauMapper.class})
 class CreditBureauRegistrationServiceIntegrationTest {
 
@@ -34,81 +37,178 @@ class CreditBureauRegistrationServiceIntegrationTest {
     @Autowired
     private CreditBureauMapper mapper;
 
-    @Test
-    void canCreateCreditBureau(){
-        //Setup
-        CreditBureauData creditBureauData = CreditBureauData.builder()
+    @Autowired
+    private EncryptionService encryptionService;
+
+    private CreditBureauData creditBureauData;
+
+    private CreditBureauData creditBureauData1;
+
+    private CBRegisterParamsData creditBureauDataParams;
+
+    private CBRegisterParamsData creditBureauData1Params;
+
+    private CreditBureau savedBureau;
+
+    private CreditBureau savedBureau1;
+
+    Long bureauId;
+
+    Long bureauId1;
+
+    @PostConstruct
+    public void init() {
+        creditBureauData = CreditBureauData.builder()
                 .creditBureauName("Test Bureau")
                 .country("United States")
-                .available(true)
-                .active(true)
+                .active(false)
+                .registrationParamKeys(new HashSet<>(Arrays.asList("username", "password", "apiKey")))
                 .build();
 
-        //Test Create CreditBureau
-        CreditBureau savedBureau = writeService.createCreditBureau(creditBureauData);
-        Long bureauId = savedBureau.getId();
-
-        //Test get all Credit Bureau
-        List<CreditBureauData> creditBureauDataList = readService.getAllCreditBureaus();
-
-        //Test if CB Registration Param, empty hashmap is created
-        CBRegisterParamsData cbRegisterParamsData = readService.getCreditBureauParams(bureauId);
+        creditBureauDataParams = CBRegisterParamsData.builder()
+                // Add individual registration parameters using the singular form method
+                .registrationParam("username", "testUser")
+                .registrationParam("password", "testPassword")
+                .registrationParam("apiKey", "1234567890123456")
+                .build();
 
 
-        //expected
-        assertNotNull(creditBureauDataList);
-        assertEquals(1, creditBureauDataList.size());
-        assertEquals("Test Bureau", creditBureauDataList.getFirst().getCreditBureauName());
-        assertEquals("United States", creditBureauDataList.getFirst().getCountry());
+        creditBureauData1 = CreditBureauData.builder()
+                .creditBureauName("Test Bureau 1")
+                .country("Mexico")
+                .active(false)
+                .registrationParamKeys(new HashSet<>(Arrays.asList("publicKey", "privateKey")))
+                .build();
 
-        //expected for CB Registration Param
-        assertNotNull(cbRegisterParamsData);
-        assertEquals(0, cbRegisterParamsData.getRegistrationParams().size());
+        creditBureauData1Params = CBRegisterParamsData.builder()
+                .registrationParam("publicKey", "09876543210987")
+                .registrationParam("privateKey", "abcdefghijk23")
+                .build();
+    }
+
+    @BeforeEach
+    void setUp() {
+        // Create and save test credit bureaus
+        savedBureau = writeService.createCreditBureau(creditBureauData);
+        bureauId = savedBureau.getId();
+
+        savedBureau1 = writeService.createCreditBureau(creditBureauData1);
+        bureauId1 = savedBureau1.getId();
+    }
+
+    @Disabled
+    @Test
+    @DisplayName("")
+    void canThrowExceptionIfCreditBureauNotFound(){}
+
+    @Test
+    @DisplayName( "Can create and save a credit bureau, created credit bureau should have also have created ")
+    void canCreateAndSaveCreditBureau(){
+        //action
+        //reads Test Bureau's registration parameter keys
+        List<String> keys = readService.getCreditBureauParamKeys(bureauId);
+
+        //reads Test Bureau 1's registration parameter keys
+        List<String> keys1 = readService.getCreditBureauParamKeys(bureauId1);
+
+        // assertions
+        assertNotNull(savedBureau);
+        assertNotNull(savedBureau1);
+
+        // Verify IDs are generated
+        assertNotNull(bureauId);
+        assertNotNull(bureauId1);
+
+        // Verify properties of the first credit bureau
+        assertEquals("Test Bureau", savedBureau.getCreditBureauName());
+        assertEquals("United States", savedBureau.getCountry());
+        assertFalse(savedBureau.isActive());
+
+        //Verify if the right keys are there for the first credit bureau
+        assertEquals(3, keys.size());
+        assertTrue(keys.contains("username"));
+        assertTrue(keys.contains("password"));
+        assertTrue(keys.contains("apiKey"));
+
+        // Verify properties of the second credit bureau
+        assertEquals("Test Bureau 1", savedBureau1.getCreditBureauName());
+        assertEquals("Mexico", savedBureau1.getCountry());
+        assertFalse(savedBureau1.isActive());
+
+        //Verify if the right keys are there for the second credit bureau
+        assertEquals(2, keys1.size());
+        assertTrue(keys1.contains("publicKey"));
+        assertTrue(keys1.contains("privateKey"));
+
+    }
 
 
+
+    @Test
+    void canRetrieveAllCreditBureaus(){
+        // Verify credit bureaus are in the database
+        List<CreditBureauData> allBureaus = readService.getAllCreditBureaus();
+        assertNotNull(allBureaus);
+        assertTrue(allBureaus.size() == 2);
     }
 
     @Test
-    void shouldWriteAndReadCreditBureauParams() {
-        // Given
-        // Create the actual JPA entities that will be saved to the database.
-        CreditBureau initialBureau = new CreditBureau();
-        initialBureau.setCreditBureauName("Test Bureau");
-        initialBureau.setCountry("United States");
-        initialBureau.setActive(true);
-        initialBureau.setAvailable(true);
-
-        CBRegisterParams initialParams = new CBRegisterParams();
-
-        initialBureau.setCreditBureauParameter(initialParams);
-        initialParams.setCreditBureau(initialBureau);
-
-        CreditBureau savedBureau = creditBureauRepository.saveAndFlush(initialBureau);
-        Long bureauId = savedBureau.getId(); // Use the real, generated ID
-
-        // action
-        CBRegisterParamsData updateDto = CBRegisterParamsData.builder()
-                .id(initialBureau.getId())
-                .registrationParam("username", "testuser")
-                .registrationParam("password", "testpass")
-                .registrationParam("endpoint", "http://localhost:8080")
-                .build();
-
-        writeService.configureCreditBureauParams(updateDto);
-
-        // expected
-        // to Read the data back from the database to verify the changes.
-        List<String> result = readService.getCreditBureauParamKeys(bureauId); //return a list of keys
-        Map<String, String> resultMap = readService.getRegistrationParamMap(bureauId);
-
-        // Assert that the data was correctly updated.
-        assertNotNull(result);
-        assertNotNull(resultMap);
-        assertEquals(3, result.size());
-        assertEquals("testuser", resultMap.get("username"));
-        assertEquals("testpass", resultMap.get("password"));
-        assertEquals("http://localhost:8080", resultMap.get("endpoint"));
+    void canRetrieveCreditBureauById(){
+        // Verify the credit bureaus can be found in the repository
+        assertTrue(creditBureauRepository.findById(bureauId).isPresent());
+        assertTrue(creditBureauRepository.findById(bureauId1).isPresent());
     }
+
+    @Disabled
+    @Test
+    @DisplayName( "User can only view Credit Bureaus with configured param keys")
+    void canThrowExceptionIfCreditBureauNotFoundById(){}
+
+    @Disabled
+    @Test
+    @DisplayName( "User should not be able view Credit Bureau if Param Keys have not been configured")
+    void canThrowExceptionIfCreditBureauParamKeysAreEmpty(){}
+
+    @Disabled
+    @Test
+    @DisplayName("")
+    void canThrowExceptionIfCreditBureauParamKeysNotFound(){}
+
+    @Test
+    @DisplayName("")
+    void canConfigureAndRetrieveCreditBureauConfigurationParamValues(){
+        //configures param values
+        writeService.configureCreditBureauParamsValues(bureauId,creditBureauDataParams);
+        writeService.configureCreditBureauParamsValues(bureauId1,creditBureauData1Params);
+
+        //retrieves the param values
+        Map<String, String> values = readService.getRegistrationParamMap(bureauId);
+        Map<String, String> values1 = readService.getRegistrationParamMap(bureauId1);
+
+        //tests
+        assertNotNull(values);
+        assertNotNull(values1);
+        assertEquals(3, values.size());
+        assertEquals(2, values1.size());
+        assertEquals("testUser", values.get("username"));
+        assertEquals("testPassword", values.get("password"));
+        assertEquals("1234567890123456", values.get("apiKey"));
+        assertEquals("09876543210987", values1.get("publicKey"));
+        assertEquals("abcdefghijk23", values1.get("privateKey"));
+
+
+
+    }
+
+    @Disabled
+    @Test
+    @DisplayName("")
+    void canThrowExceptionIfConfiguringValuesForNonEmptyValues(){}
+
+    @Disabled
+    @Test
+    @DisplayName("")
+    void canThrowExceptionIfCreditBureauParamValuesNotFound(){}
 
 
 }

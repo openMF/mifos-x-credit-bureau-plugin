@@ -1,7 +1,10 @@
 package org.mifos.creditbureau.mappers;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
 import org.mifos.creditbureau.data.CBRegisterParamsData;
 import org.mifos.creditbureau.data.CreditBureauData;
@@ -16,18 +19,20 @@ public class CreditBureauMapper {
             return null;
         }
 
-        CBRegisterParamsData creditBureauParameter = null;
-        if (creditBureau.getCreditBureauParameter() != null) {
-            creditBureauParameter = toCBRegisterParamsData(creditBureau.getCreditBureauParameter());
+        // Extract registration parameter keys from the entity
+        Set<String> registrationParamKeys = new HashSet<>();
+        if (creditBureau.getCreditBureauParameter() != null &&
+            creditBureau.getCreditBureauParameter().getRegistrationParams() != null) {
+            registrationParamKeys =
+                    new HashSet<>(creditBureau.getCreditBureauParameter().getRegistrationParams().keySet());
         }
 
         return CreditBureauData.builder()
                 .id(creditBureau.getId())
                 .creditBureauName(creditBureau.getCreditBureauName())
-                .available(creditBureau.isAvailable())
                 .active(creditBureau.isActive())
                 .country(creditBureau.getCountry())
-                .creditBureauParameter(creditBureauParameter)
+                .registrationParamKeys(registrationParamKeys)
                 .build();
     }
 
@@ -39,15 +44,10 @@ public class CreditBureauMapper {
         CreditBureau creditBureau = new CreditBureau();
         // id is ignored as per the original MapStruct configuration
         creditBureau.setCreditBureauName(creditBureauData.getCreditBureauName());
-        creditBureau.setAvailable(creditBureauData.isAvailable());
         creditBureau.setActive(creditBureauData.isActive());
         creditBureau.setCountry(creditBureauData.getCountry());
 
-        if (creditBureauData.getCreditBureauParameter() != null) {
-            CBRegisterParams params = toCBRegisterParams(creditBureauData.getCreditBureauParameter());
-            params.setCreditBureau(creditBureau);
-            creditBureau.setCreditBureauParameter(params);
-        }
+        // Registration Params handled in the service layer
 
         return creditBureau;
     }
@@ -83,5 +83,9 @@ public class CreditBureauMapper {
         }
 
         return cbRegisterParams;
+    }
+
+    public Set<String> extractRegistrationParamKeys(Map<String, String> map) {
+        return map!=null ? new HashSet<>(map.keySet()) : new HashSet<>();
     }
 }
