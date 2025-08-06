@@ -28,21 +28,29 @@ public class CreditBureauRegistrationWriteServiceImpl implements CreditBureauReg
     public CreditBureau createCreditBureau(CreditBureauData creditBureauData) {
         //Create a Credit Bureau with basic info
         CreditBureau creditBureau = creditBureauMapper.toCreditBureau(creditBureauData);
-        creditBureau = creditBureauRepository.saveAndFlush(creditBureau);
 
         //Create CBRegisterParams with empty values for all keys
         CBRegisterParams cbRegisterParams = new CBRegisterParams();
-        creditBureau.setCreditBureauParameter(cbRegisterParams);
-        cbRegisterParams.setCreditBureau(creditBureau);
 
         //Initialize the registration params with keys from creditBureauData
         Map<String, String> registrationParams = new HashMap<>();
         for(String key : creditBureauData.getRegistrationParamKeys()){
-            registrationParams.put(key, null);
+            registrationParams.put(key, "");
         }
-        cbRegisterParams.setRegistrationParams(registrationParams);
+        cbRegisterParams.setRegistrationParams(new HashMap<>(registrationParams)); // Create a new HashMap to ensure JPA detects the change
 
-        return CBRegisterParamRepository.save(cbRegisterParams).getCreditBureau();
+        // Save CreditBureau first to generate its ID
+        creditBureau = creditBureauRepository.saveAndFlush(creditBureau);
+
+        // Now that creditBureau has an ID, set it on cbRegisterParams
+        cbRegisterParams.setCreditBureau(creditBureau);
+        // Also set the parameter on the creditBureau for consistency and cascade if needed
+        creditBureau.setCreditBureauParameter(cbRegisterParams);
+
+        // Save CBRegisterParams, which is the owning side and uses @MapsId
+        CBRegisterParamRepository.save(cbRegisterParams);
+
+        return creditBureau;
     }
 
     @Override
