@@ -1,16 +1,18 @@
 package org.mifos.creditbureau.api;
 
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import org.mifos.creditbureau.data.CBRegisterParamsData;
 import org.mifos.creditbureau.data.CreditBureauData;
+import org.mifos.creditbureau.data.CreditBureauSummary;
+import org.mifos.creditbureau.domain.CBRegisterParamRepository;
 import org.mifos.creditbureau.domain.CBRegisterParams;
 import org.mifos.creditbureau.domain.CreditBureau;
+import org.mifos.creditbureau.domain.CreditBureauRepository;
 import org.mifos.creditbureau.service.CreditBureauRegistrationReadService;
 import org.mifos.creditbureau.service.CreditBureauRegistrationWriteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -28,17 +30,21 @@ import java.util.stream.Collectors;
 public class CreditBureauRegistrationApiResource {
     private final CreditBureauRegistrationWriteServiceImpl creditBureauRegistrationWriteService;
     private final CreditBureauRegistrationReadService creditBureauRegistrationReadService;
+    private final CreditBureauRepository creditBureauRepository;
+    private final CBRegisterParamRepository cbRegisterParamRepository;
 
     @Autowired
-    public CreditBureauRegistrationApiResource(CreditBureauRegistrationWriteServiceImpl creditBureauRegistrationWriteService, CreditBureauRegistrationReadService creditBureauRegistrationReadService) {
+    public CreditBureauRegistrationApiResource(CreditBureauRegistrationWriteServiceImpl creditBureauRegistrationWriteService, CreditBureauRegistrationReadService creditBureauRegistrationReadService, CreditBureauRepository creditBureauRepository, CBRegisterParamRepository cbRegisterParamRepository, CBRegisterParamRepository cbRegisterParamRepository1) {
         this.creditBureauRegistrationWriteService = creditBureauRegistrationWriteService;
         this.creditBureauRegistrationReadService = creditBureauRegistrationReadService;
+        this.creditBureauRepository = creditBureauRepository;
+        this.cbRegisterParamRepository = cbRegisterParamRepository1;
     }
 
     @GET
     @Path("/available")
     //Retrieve all Credit Bureaus
-    public List<String> getAllCreditBureaus() {
+    public List<CreditBureauSummary> getAllCreditBureaus() {
         // Fetch the list of CreditBureauData objects
         List<CreditBureauData> creditBureaus = Optional.ofNullable(
                 this.creditBureauRegistrationReadService.getAllCreditBureaus())
@@ -46,16 +52,20 @@ public class CreditBureauRegistrationApiResource {
 
         // Transform the list into a list of names using a Java Stream
         return creditBureaus.stream()
-                .map(CreditBureauData::getCreditBureauName)
+                .map(cb -> new CreditBureauSummary(cb.getId(), cb.getCreditBureauName()))
                 .collect(Collectors.toList());
     }
 
     @POST
     @Path("/creditbureaus")
     //create a Credit Bureau and CBRegisterParams
-    public ResponseEntity<CreditBureau> createCreditBureau(@RequestBody CreditBureauData creditBureauData) {
+    public ResponseEntity<CreditBureauSummary> createCreditBureau(@RequestBody CreditBureauData creditBureauData) {
         CreditBureau createdCreditBureau = creditBureauRegistrationWriteService.createCreditBureau(creditBureauData);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdCreditBureau);
+        CreditBureauSummary summary = new CreditBureauSummary(
+                createdCreditBureau.getId(),
+                createdCreditBureau.getCreditBureauName()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(summary);
     }
 
     @GET
@@ -70,9 +80,27 @@ public class CreditBureauRegistrationApiResource {
 
     @POST
     @Path("/{id}/configure")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     //Enter the values of the API key into the dto
-    public ResponseEntity<CBRegisterParams> configureCreditBureauParams(@RequestBody Long id, CBRegisterParamsData cbRegisterParamsData) {
+    public ResponseEntity<CBRegisterParams> configureCreditBureauParams(@PathParam("id") Long id, @RequestBody CBRegisterParamsData cbRegisterParamsData) {
         CBRegisterParams createdCBParams = creditBureauRegistrationWriteService.configureCreditBureauParamsValues(id, cbRegisterParamsData);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCBParams);
+    }
+
+    @GET
+    @Path("/creditbureaus/{id}")
+    public ResponseEntity<CreditBureau> getCreditBureauById(@PathParam("id") Long id) {
+        Optional<CreditBureau> creditBureauOpt = creditBureauRepository.findById(id);
+        return creditBureauOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @GET
+    @Path("/cbregisterparams/{id}")
+    public ResponseEntity<CBRegisterParams> getCBRegisterParamsById(@PathParam("id") Long id) {
+        Optional<CBRegisterParams> paramsOpt = cbRegisterParamRepository.findById(id);
+        return paramsOpt
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 }
