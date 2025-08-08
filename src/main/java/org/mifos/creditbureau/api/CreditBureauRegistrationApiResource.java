@@ -18,31 +18,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
-@Path("/CreditBureauRegistration")
+@Path("/credit-bureaus")
 @Component
 public class CreditBureauRegistrationApiResource {
     private final CreditBureauRegistrationWriteServiceImpl creditBureauRegistrationWriteService;
     private final CreditBureauRegistrationReadService creditBureauRegistrationReadService;
     private final CreditBureauRepository creditBureauRepository;
-    private final CBRegisterParamRepository cbRegisterParamRepository;
+
 
     @Autowired
     public CreditBureauRegistrationApiResource(CreditBureauRegistrationWriteServiceImpl creditBureauRegistrationWriteService, CreditBureauRegistrationReadService creditBureauRegistrationReadService, CreditBureauRepository creditBureauRepository, CBRegisterParamRepository cbRegisterParamRepository, CBRegisterParamRepository cbRegisterParamRepository1) {
         this.creditBureauRegistrationWriteService = creditBureauRegistrationWriteService;
         this.creditBureauRegistrationReadService = creditBureauRegistrationReadService;
         this.creditBureauRepository = creditBureauRepository;
-        this.cbRegisterParamRepository = cbRegisterParamRepository1;
+
     }
 
     @GET
-    @Path("/available")
+    @Path("")
     //Retrieve all Credit Bureaus
     public List<CreditBureauSummary> getAllCreditBureaus() {
         // Fetch the list of CreditBureauData objects
@@ -57,8 +54,8 @@ public class CreditBureauRegistrationApiResource {
     }
 
     @POST
-    @Path("/creditbureaus")
-    //create a Credit Bureau and CBRegisterParams
+    @Path("")
+    //create a Credit Bureau and CBRegisterParams, will not be exposed
     public ResponseEntity<CreditBureauSummary> createCreditBureau(@RequestBody CreditBureauData creditBureauData) {
         CreditBureau createdCreditBureau = creditBureauRegistrationWriteService.createCreditBureau(creditBureauData);
         CreditBureauSummary summary = new CreditBureauSummary(
@@ -69,17 +66,34 @@ public class CreditBureauRegistrationApiResource {
     }
 
     @GET
-    @Path("/{id}/configParams")
+    @Path("/{id}")
+    //return value is CreditBureauSummary we do not want to expose the Entity itself
+    public ResponseEntity<CreditBureauSummary> getCreditBureauById(@PathParam("id") Long id) {
+        Optional<CreditBureau> creditBureauOpt = creditBureauRepository.findById(id);
+
+        return creditBureauOpt
+                .map(cb -> {
+                    CreditBureauSummary summary = new CreditBureauSummary(
+                            cb.getId(),
+                            cb.getCreditBureauName()
+                    );
+                    return ResponseEntity.ok(summary);
+                })
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @GET
+    @Path("/{id}/configuration-keys")
     //Get the titles of the secrets needed
-    public List<String> getConfigParams(@PathParam("id") Long organizationCreditBureauId) {        // Fetch the configuration parameters for the given ID
+    public List<String> getConfigParamKeys(@PathParam("id") Long organizationCreditBureauId) {        // Fetch the configuration parameters for the given ID
         // Call the service layer to get the parameters DTO
         List<String> creditBureauParamKeys = this.creditBureauRegistrationReadService.getCreditBureauParamKeys(organizationCreditBureauId);
         return Objects.requireNonNullElse(creditBureauParamKeys, Collections.emptyList());
 
     }
 
-    @POST
-    @Path("/{id}/configure")
+    @PUT
+    @Path("/{id}/configuration")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     //Enter the values of the API key into the dto
@@ -89,18 +103,11 @@ public class CreditBureauRegistrationApiResource {
     }
 
     @GET
-    @Path("/creditbureaus/{id}")
-    public ResponseEntity<CreditBureau> getCreditBureauById(@PathParam("id") Long id) {
-        Optional<CreditBureau> creditBureauOpt = creditBureauRepository.findById(id);
-        return creditBureauOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    @Path("/{id}/configuration-map")
+    //will not be exposed
+    public Map<String, String> getCBRegisterParamsById(@PathParam("id") Long id) {
+        Map<String, String> cbRegisterParams = creditBureauRegistrationReadService.getRegistrationParamMap(id);
+        return Objects.requireNonNullElse(cbRegisterParams, Collections.emptyMap());
     }
 
-    @GET
-    @Path("/cbregisterparams/{id}")
-    public ResponseEntity<CBRegisterParams> getCBRegisterParamsById(@PathParam("id") Long id) {
-        Optional<CBRegisterParams> paramsOpt = cbRegisterParamRepository.findById(id);
-        return paramsOpt
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
 }

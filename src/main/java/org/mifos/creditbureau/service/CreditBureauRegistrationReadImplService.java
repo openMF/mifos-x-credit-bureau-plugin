@@ -23,6 +23,7 @@ public class CreditBureauRegistrationReadImplService implements CreditBureauRegi
     private final CBRegisterParamRepository cbRegisterParamRepository;
     // Inject the MapStruct mapper for converting between entities and DTOs
     private final CreditBureauMapper creditBureauMapper;
+    private final EncryptionService encryptionService;
 
 
     @Override
@@ -47,8 +48,25 @@ public class CreditBureauRegistrationReadImplService implements CreditBureauRegi
         Optional<CBRegisterParams> cbParamOptional = cbRegisterParamRepository.findById(creditBureauId);
 
         return cbParamOptional
-                .map(CBRegisterParams::getRegistrationParams)
+                .map(cbParams ->{
+                    Map<String, String> encryptedMap = cbParams.getRegistrationParams();
+                    Map<String, String> decryptedMap = new HashMap<>();
+
+                    encryptedMap.forEach((key, value) -> {
+                        try{
+                            String decryptedValue = encryptionService.decrypt(value);
+                            decryptedMap.put(key, decryptedValue);
+                        }catch (Exception e){
+                            throw new RuntimeException("Error decrypting parameter: " + e);
+                        }
+                    });
+                    return decryptedMap;
+                })
                 .orElse(Collections.emptyMap());
+
+//                .map(CBRegisterParams::getRegistrationParams)
+
+
 
     }
 

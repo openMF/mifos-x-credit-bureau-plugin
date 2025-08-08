@@ -21,7 +21,8 @@ public class EncryptionService {
     private final SecretKeySpec secretKey;
 
     public EncryptionService(@Value("${mifos.security.encryption.key}") String key) {
-        this.secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
+        byte[] decodedKey = Base64.getDecoder().decode(key);
+        this.secretKey = new SecretKeySpec(decodedKey, "AES");
     }
     public String encrypt(String secret) throws Exception {
         byte[] iv = new byte[GCM_IV_LENGTH];
@@ -37,7 +38,6 @@ public class EncryptionService {
         byteBuffer.put(iv);
         byteBuffer.put(cipherText);
         return Base64.getEncoder().encodeToString(byteBuffer.array());
-
     }
 
     public String decrypt(String base64CipherText) throws Exception {
@@ -57,8 +57,5 @@ public class EncryptionService {
         byte[] decryptedSecret = cipher.doFinal(cipherText);
         return new String(decryptedSecret, StandardCharsets.UTF_8);
     }
-
-
-
 
 }
