@@ -22,6 +22,7 @@ public class CreditBureauRegistrationWriteServiceImpl implements CreditBureauReg
     private final CreditBureauMapper creditBureauMapper;
     private final CBRegisterParamRepository CBRegisterParamRepository;
     private final CreditBureauRepository creditBureauRepository;
+    private final EncryptionService encryptionService;
 
     @Override
     @Transactional
@@ -66,12 +67,21 @@ public class CreditBureauRegistrationWriteServiceImpl implements CreditBureauReg
         Map<String, String> existingMap = existingParams.getRegistrationParams();
         Map<String, String> valueMap = cbRegisterParamsData.getRegistrationParams();
 
-        for(Map.Entry<String, String> entry : valueMap.entrySet()){
-            String key = entry.getKey();
-            if(existingMap.containsKey(key)){
-                existingMap.put(key, entry.getValue());
+        valueMap.forEach((key, value) ->{
+            if(existingMap.containsKey(key)) {
+                try {
+                    existingMap.put(key, encryptionService.encrypt(value));
+                } catch (Exception e) {
+                    throw new RuntimeException("Error encrypting parameter: " + e);
+                }
             }
-        }
+        });
+//        for(Map.Entry<String, String> entry : valueMap.entrySet()){
+//            String key = entry.getKey();
+//            if(existingMap.containsKey(key)){
+//                existingMap.put(key, entry.getValue());
+//            }
+//        }
 
         return CBRegisterParamRepository.save(existingParams);
     }
