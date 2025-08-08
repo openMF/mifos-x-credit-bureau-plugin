@@ -44,9 +44,9 @@ dependencies {
 
 	// Jakarta REST / Jersey (JAX-RS)
 	implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0")
-	implementation("org.glassfish.jersey.containers:jersey-container-servlet:3.1.10")
-	implementation("org.glassfish.jersey.core:jersey-server:3.1.10")
-	implementation("org.glassfish.jersey.inject:jersey-hk2:3.1.10")
+	implementation("org.glassfish.jersey.containers:jersey-container-servlet:3.1.11")
+	implementation("org.glassfish.jersey.core:jersey-server:3.1.11")
+	implementation("org.glassfish.jersey.inject:jersey-hk2:3.1.11")
 
 	// Database & ORM
 	implementation("org.liquibase:liquibase-core")
