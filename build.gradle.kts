@@ -28,10 +28,14 @@ repositories {
 	maven {
 		url = uri("https://mifos.jfrog.io/artifactory/libs-release-local")
 	}
+	maven{
+		url = uri("https://jitpack.io")
+	}
 }
 ext {
 	set("springCloudVersion", "2024.0.1")
 	set("fineractVersion", "0.0.1000-b80930b")
+
 }
 
 dependencies {
@@ -56,6 +60,9 @@ dependencies {
 
 	// Fineract
 	implementation("org.apache.fineract:fineract-core:${project.ext["fineractVersion"]}")
+	implementation("com.github.openMF:fineract-client-kmp:1.0.2") {
+		exclude(group = "com.github.openMF.fineract-client-kmp", module = "fineract-client-kmp-js")
+	}
 	// Optional alternative:
 	// implementation("org.apache.fineract:fineract-provider:${project.ext["fineractVersion"]}:plain")
 
