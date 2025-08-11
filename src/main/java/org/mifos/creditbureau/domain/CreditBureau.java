@@ -1,10 +1,12 @@
 package org.mifos.creditbureau.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +37,7 @@ public class CreditBureau {
     private String country;
 
     @OneToOne(mappedBy = "creditBureau", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private CBRegisterParams creditBureauParameter;
 
 

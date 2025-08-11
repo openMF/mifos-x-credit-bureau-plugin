@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +28,7 @@ public class CBRegisterParams {
     @OneToOne
     @MapsId
     @JoinColumn(name = "credit_bureau_id")
+    @JsonBackReference
     private CreditBureau creditBureau;
 
     @ElementCollection(fetch = FetchType.EAGER)
