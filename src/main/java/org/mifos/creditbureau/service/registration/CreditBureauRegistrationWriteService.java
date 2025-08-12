@@ -1,4 +1,4 @@
-package org.mifos.creditbureau.service;
+package org.mifos.creditbureau.service.registration;
 import org.mifos.creditbureau.data.CBRegisterParamsData;
 import org.mifos.creditbureau.data.CreditBureauData;
 import org.mifos.creditbureau.domain.CBRegisterParams;

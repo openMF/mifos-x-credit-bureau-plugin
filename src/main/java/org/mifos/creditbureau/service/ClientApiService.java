@@ -1,29 +1,19 @@
 package org.mifos.creditbureau.service;
 
+import lombok.AllArgsConstructor;
 import org.mifos.creditbureau.data.ClientData;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.mifos.fineract.client.infrastructure.FineractClient;
+import org.mifos.creditbureau.wrappers.FineractClientServiceWrapper;
+import org.mifos.creditbureau.data.ClientData;
+import org.mifos.creditbureau.data.ClientAddressData;
 
+//TODO: use a builder to populate the dtos
+//call this service, and use the populated dtos to construct a dto for a credit bureau
+@AllArgsConstructor
 @Service
 public class ClientApiService {
 
-    private final FineractClient fineractClient;
-
-    public ClientApiService() {
-        this.fineractClient = new FineractClient.Builder()
-                .baseURL("https://sandbox.mifos.community/fineract-provider/api/v1")
-                .basicAuth("your-username", "your-password")
-                .tenant("your-tenant")
-                .build();
-
-    }
-
-    public ClientData buildClientData(Long clientId){
-        //TODO: figure out how to use retrieveOne11
-        //var clientData = fineractClient.getClients().retrieveOne11(clientId, null );
-        return null;
-    }
+    private final FineractClientServiceWrapper fineractClientServiceWrapper;
 
 
 }

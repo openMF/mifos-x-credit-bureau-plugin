@@ -2,6 +2,8 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.5.3"
 	id("io.spring.dependency-management") version "1.1.7"
+	id("org.jetbrains.kotlin.jvm") version "1.9.22"
+	id("org.jetbrains.kotlin.plugin.spring") version "1.9.22"
 }
 
 group = "org.mifos"
@@ -63,8 +65,14 @@ dependencies {
 	implementation("com.github.openMF:fineract-client-kmp:1.0.2") {
 		exclude(group = "com.github.openMF.fineract-client-kmp", module = "fineract-client-kmp-js")
 	}
+	//implementation("io.github.niyajali:fineract-client-kmp:1.0.6")
+
 	// Optional alternative:
 	// implementation("org.apache.fineract:fineract-provider:${project.ext["fineractVersion"]}:plain")
+
+	//Kotlin Support
+	implementation("org.jetbrains.kotlin:kotlin-stdlib")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
 	// Mapping / Code Generation
 	implementation("org.mapstruct:mapstruct:1.6.3")
