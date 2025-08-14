@@ -2,9 +2,9 @@ package org.mifos.creditbureau.api;
 
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import org.mifos.creditbureau.data.CBRegisterParamsData;
-import org.mifos.creditbureau.data.CreditBureauData;
-import org.mifos.creditbureau.data.CreditBureauSummary;
+import org.mifos.creditbureau.data.registration.CBRegisterParamsData;
+import org.mifos.creditbureau.data.registration.CreditBureauData;
+import org.mifos.creditbureau.data.registration.CreditBureauSummary;
 import org.mifos.creditbureau.domain.CBRegisterParamRepository;
 import org.mifos.creditbureau.domain.CBRegisterParams;
 import org.mifos.creditbureau.domain.CreditBureau;

@@ -2,8 +2,8 @@ package org.mifos.creditbureau.service.registration;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.mifos.creditbureau.data.CBRegisterParamsData;
-import org.mifos.creditbureau.data.CreditBureauData;
+import org.mifos.creditbureau.data.registration.CBRegisterParamsData;
+import org.mifos.creditbureau.data.registration.CreditBureauData;
 import org.mifos.creditbureau.domain.CBRegisterParamRepository;
 import org.mifos.creditbureau.domain.CBRegisterParams;
 import org.mifos.creditbureau.domain.CreditBureau;

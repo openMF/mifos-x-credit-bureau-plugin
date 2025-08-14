@@ -1,7 +1,7 @@
 package org.mifos.creditbureau.service.registration;
 
-import org.mifos.creditbureau.data.CBRegisterParamsData;
-import org.mifos.creditbureau.data.CreditBureauData;
+import org.mifos.creditbureau.data.registration.CBRegisterParamsData;
+import org.mifos.creditbureau.data.registration.CreditBureauData;
 
 import java.util.List;
 import java.util.Map;
