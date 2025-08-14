@@ -10,7 +10,6 @@ import jakarta.ws.rs.ApplicationPath;
 public class JerseyConfig extends ResourceConfig {
     
     public JerseyConfig() {
-
         packages("org.mifos.creditbureau.api");
     }
 }

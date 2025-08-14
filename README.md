@@ -24,6 +24,7 @@ This plugin provides integration between Mifos X and credit bureau systems. It a
 
 ### Running the Application
 ```bash
+docker compose up -d
 ./gradlew bootRun
 ```
 
