@@ -15,9 +15,9 @@ public class FineractClientResponse implements Serializable {
 
     private final long id;
 
-    private final String firstName;
+    private final String firstname;
 
-    private final String lastName;
+    private final String lastname;
 
     private final String externalId; //RFC
 
