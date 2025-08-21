@@ -19,7 +19,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-//call this service, and use the populated dtos to construct a dto for a credit bureau
+//TODO: implement null checks and error handling so that code will not break when api response is null.
+//TODO: implement a dynamic search, not just getting one client at a time? Do the search first, and then get the client if there is a match
 @Service
 public class ClientApiService{
 
@@ -35,10 +36,7 @@ public class ClientApiService{
     @Value("${mifos.fineract.api.password}")
     private String password;
 
-    private
-
     static RestTemplate restTemplate = new RestTemplate() ;
-
 
     public ClientData getClientData(Long clientId){
         HttpHeaders headers = new HttpHeaders();
@@ -57,7 +55,7 @@ public class ClientApiService{
         ResponseEntity<FineractClientAddressResponse[]> addressResponseEntity = restTemplate.exchange(addressUrl, HttpMethod.GET, entity, FineractClientAddressResponse[].class);
         FineractClientAddressResponse[] addressResponse = addressResponseEntity.getBody();
 
-        FineractClientAddressResponse firstAddressResponse = addressResponse != null && addressResponse.length > 0
+        FineractClientAddressResponse firstAddressResponse = addressResponse != null && addressResponse.length > 0 //what if i need multiple addresses
                 ? addressResponse[0]
                 : null;
 
@@ -79,10 +77,16 @@ public class ClientApiService{
                 .phoneNumber(apiResponse.getMobileNo())
                 .emailAddress(apiResponse.getEmailAddress())
                 .nationality(firstAddressResponse.getCountryName())
+
+                .addressType(firstAddressResponse.getAddressType())
+                .addressId(firstAddressResponse.getId())
                 .streetAddress(streetAddress)
-                .neighborhood(firstAddressResponse.getTownCity())
-                .stateProvince(firstAddressResponse.getStateProvince())
+                .townVillage(firstAddressResponse.getTownVillage())
+                .city(firstAddressResponse.getCity())
+                .stateProvince(firstAddressResponse.getStateName())
+                .country(firstAddressResponse.getCountryName())
                 .postalCode(firstAddressResponse.getPostalCode())
+
                 .build();
 
     }
