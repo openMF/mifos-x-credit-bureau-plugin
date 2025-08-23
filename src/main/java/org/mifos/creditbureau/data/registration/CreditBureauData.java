@@ -1,4 +1,4 @@
-package org.mifos.creditbureau.data;
+package org.mifos.creditbureau.data.registration;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

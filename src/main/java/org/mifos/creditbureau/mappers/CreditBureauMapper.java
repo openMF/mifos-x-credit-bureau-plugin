@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
-import org.mifos.creditbureau.data.CBRegisterParamsData;
-import org.mifos.creditbureau.data.CreditBureauData;
+import org.mifos.creditbureau.data.registration.CBRegisterParamsData;
+import org.mifos.creditbureau.data.registration.CreditBureauData;
 import org.mifos.creditbureau.domain.CBRegisterParams;
 import org.mifos.creditbureau.domain.CreditBureau;
 

@@ -1,13 +1,14 @@
-package org.mifos.creditbureau.service;
+package org.mifos.creditbureau.service.registration;
 
 import lombok.AllArgsConstructor;
-import org.mifos.creditbureau.data.CBRegisterParamsData;
-import org.mifos.creditbureau.data.CreditBureauData;
+import org.mifos.creditbureau.data.registration.CBRegisterParamsData;
+import org.mifos.creditbureau.data.registration.CreditBureauData;
 import org.mifos.creditbureau.domain.CBRegisterParamRepository;
 import org.mifos.creditbureau.domain.CBRegisterParams;
 import org.mifos.creditbureau.domain.CreditBureau;
 import org.mifos.creditbureau.domain.CreditBureauRepository;
 import org.mifos.creditbureau.mappers.CreditBureauMapper;
+import org.mifos.creditbureau.service.EncryptionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

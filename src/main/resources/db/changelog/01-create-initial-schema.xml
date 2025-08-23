@@ -62,4 +62,11 @@
         <addPrimaryKey tableName="credit_bureau_registration_param_values" columnNames="param_id, param_key"/>
     </changeSet>
 
+    <changeSet author="yuwatinyi" id="4-increase-param_value_length">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="credit_bureau_registration_param_values" columnName="param_value"/>
+        </preConditions>
+        <modifyDataType tableName="credit_bureau_registration_param_values" columnName="param_value" newDataType="TEXT"/>
+    </changeSet>
+
 </databaseChangeLog>
