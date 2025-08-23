@@ -31,7 +31,7 @@ repositories {
 }
 ext {
 	set("springCloudVersion", "2024.0.1")
-	set("fineractVersion", "0.0.1000-b80930b")
+	set("fineractVersion", "0.0.1237-0ce4683")
 }
 
 dependencies {
@@ -42,7 +42,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 
 	// API Documentation
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.10")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11")
 
 	// Jakarta REST / Jersey (JAX-RS)
 	implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0")
