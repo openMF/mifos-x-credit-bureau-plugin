@@ -41,7 +41,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 
 	// API Documentation
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.10")
 
 	// Jakarta REST / Jersey (JAX-RS)
 	implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0")
