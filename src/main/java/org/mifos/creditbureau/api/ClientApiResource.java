@@ -35,4 +35,6 @@ public class ClientApiResource {
         CirculoDeCreditoRequest circuloDeCreditoRequest = mapper.toCirculoDeCreditoRequest(clientData);
         return ResponseEntity.ok(circuloDeCreditoRequest);
     }
+
+
 }
