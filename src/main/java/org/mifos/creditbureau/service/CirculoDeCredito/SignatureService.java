@@ -16,6 +16,8 @@ import java.security.Security;
 import java.security.Signature;
 import java.util.Base64;
 import java.util.Map;
+import org.apache.commons.codec.binary.Hex;
+
 
 @Service
 public class SignatureService {
@@ -44,7 +46,7 @@ public class SignatureService {
         ecdsa.initSign(privateKey);
         ecdsa.update(requestBody.getBytes(StandardCharsets.UTF_8));
         byte[] signature = ecdsa.sign();
-        return Base64.getEncoder().encodeToString(signature);
+        return Hex.encodeHexString(signature);
     }
 
    //build the headers
@@ -52,6 +54,7 @@ public class SignatureService {
         //1. decrypt the keys from DB
         Map<String, String> keys = creditBureauRegistrationReadService.getRegistrationParamMap(creditBureauId);
         String apiKey = keys.get("x-api-key");
+
         String privateKey = keys.get("private_key");
 
         //2. Convert private key to hex
