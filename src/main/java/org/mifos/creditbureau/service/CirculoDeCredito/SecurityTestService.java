@@ -34,11 +34,6 @@ public class SecurityTestService {
 
         HttpHeaders headers = new HttpHeaders();
         headersMap.forEach(headers::add);
-        headers.add("Accept", "application/json");
-        headers.add("Accept-Encoding", "gzip, deflate, br");
-        headers.add("Connection", "keep-alive");
-        headers.add("Cache-Control", "no-cache");
-        headers.add("Cookie", "__cf_bm=a7WVNugXyQCLoNm7Nu5OO0wAmc2Mb43Dy4_5UcY50LQ-1755881022-1.0.1.1-n9EpXP87m5CytvJ2P2Um0aDIdBAthvYUkCXF34y9FK5QRASePmrQDkyxZqAa8L4g5KgYzWTc6o4zGKJ77EmX5kW9goafXJml1ABPAx9b3Mg; visid_incap_2077528=VsMEk2klQLWMD2dgJ6bkJ7a0WWgAAAAAQUIPAAAAAAAau0PlvkVXo550gjWeEL9");
 
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
