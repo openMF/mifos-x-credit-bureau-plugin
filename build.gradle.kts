@@ -39,31 +39,27 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework.boot:spring-boot-starter-jersey")
-
-	//implementation("org.springframework.boot:spring-boot-starter-webflux")
 
 	//Hex
 	implementation("commons-codec:commons-codec:1.15")
 
 	// API Documentation
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11")
-	implementation("io.swagger.core.v3:swagger-jaxrs2-jakarta:2.2.22")
-	//implementation("org.springdoc:springdoc-openapi-ui:2.8.11")
 
 	// Jakarta REST / Jersey (JAX-RS)
 	implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0")
 	implementation("org.glassfish.jersey.containers:jersey-container-servlet:3.1.11")
 	implementation("org.glassfish.jersey.core:jersey-server:3.1.11")
 	implementation("org.glassfish.jersey.inject:jersey-hk2:3.1.11")
-	implementation("com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.15.0")
 
 	// Database & ORM
 	implementation("org.liquibase:liquibase-core")
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 
 	// Fineract
-	//implementation("org.apache.fineract:fineract-core:${project.ext["fineractVersion"]}")
+	implementation("org.apache.fineract:fineract-core:${project.ext["fineractVersion"]}")
 	// Optional alternative:
 	// implementation("org.apache.fineract:fineract-provider:${project.ext["fineractVersion"]}:plain")
 
