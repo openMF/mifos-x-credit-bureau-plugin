@@ -2,13 +2,22 @@
 
 ## Configuration
 
-- SpringBoot
-- Jarkarta Servlet
+- Java & SpringBoot
+
+  - Java version `21`
+  - SpringBoot framework `3.5.5`
+- Jarkarta REST / Jersey (JAX-RS)
+
 - BouncyCastle
+
 - ApacheCommons
+
 - MariaDB & Liquibase
+
 - MapStruct
+
 - Lombok
+
 - H2 database and Junit testing
 
 ## APIs
