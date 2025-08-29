@@ -39,7 +39,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-security")
-	//implementation("org.springframework.boot:spring-boot-starter-webflux")
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework.boot:spring-boot-starter-jersey")
 
 	//Hex
@@ -60,11 +60,6 @@ dependencies {
 	// Database & ORM
 	implementation("org.liquibase:liquibase-core")
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
-
-	// Fineract
-	//implementation("org.apache.fineract:fineract-core:${project.ext["fineractVersion"]}")
-	// Optional alternative:
-	// implementation("org.apache.fineract:fineract-provider:${project.ext["fineractVersion"]}:plain")
 
 	// Mapping / Code Generation
 	implementation("org.mapstruct:mapstruct:1.6.3")

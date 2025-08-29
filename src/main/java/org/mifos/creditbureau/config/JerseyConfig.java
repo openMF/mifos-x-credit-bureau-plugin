@@ -4,14 +4,12 @@ import org.glassfish.jersey.server.ResourceConfig;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import org.springframework.context.annotation.Configuration;
 
-import jakarta.ws.rs.ApplicationPath;
-
+//TODO swagger is returning server errors
 @Configuration
-@ApplicationPath("/api")
 public class JerseyConfig extends ResourceConfig {
     
     public JerseyConfig() {
         packages("org.mifos.creditbureau.api");
-        register(OpenApiResource.class);
+        //register(OpenApiResource.class);
     }
 }
