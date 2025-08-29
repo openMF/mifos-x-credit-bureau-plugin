@@ -40,6 +40,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	implementation("org.springframework.boot:spring-boot-starter-jersey")
 
 	//Hex
 	implementation("commons-codec:commons-codec:1.15")
@@ -58,7 +59,7 @@ dependencies {
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 
 	// Fineract
-	implementation("org.apache.fineract:fineract-core:${project.ext["fineractVersion"]}")
+	//implementation("org.apache.fineract:fineract-core:${project.ext["fineractVersion"]}")
 	// Optional alternative:
 	// implementation("org.apache.fineract:fineract-provider:${project.ext["fineractVersion"]}:plain")
 

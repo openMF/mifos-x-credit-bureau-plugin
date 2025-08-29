@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import jakarta.ws.rs.ApplicationPath;
 
 @Configuration
-@ApplicationPath("/api")
+//@ApplicationPath("/api")
 public class JerseyConfig extends ResourceConfig {
     
     public JerseyConfig() {
