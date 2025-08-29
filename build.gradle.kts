@@ -39,7 +39,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	//implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework.boot:spring-boot-starter-jersey")
 
 	//Hex
@@ -47,6 +47,9 @@ dependencies {
 
 	// API Documentation
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11")
+	implementation("io.swagger.core.v3:swagger-jaxrs2:2.2.36")
+	implementation("io.swagger.core.v3:swagger-core-jakarta:2.2.36")
+
 
 	// Jakarta REST / Jersey (JAX-RS)
 	implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0")
@@ -59,7 +62,7 @@ dependencies {
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 
 	// Fineract
-	implementation("org.apache.fineract:fineract-core:${project.ext["fineractVersion"]}")
+	//implementation("org.apache.fineract:fineract-core:${project.ext["fineractVersion"]}")
 	// Optional alternative:
 	// implementation("org.apache.fineract:fineract-provider:${project.ext["fineractVersion"]}:plain")
 
