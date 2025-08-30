@@ -54,7 +54,6 @@ public class SignatureService {
         //1. decrypt the keys from DB
         Map<String, String> keys = creditBureauRegistrationReadService.getRegistrationParamMap(creditBureauId);
         String apiKey = keys.get("x-api-key");
-
         String privateKey = keys.get("private_key");
 
         //2. Convert private key to hex
