@@ -43,7 +43,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-jersey")
 
 	//Hex
-	implementation("commons-codec:commons-codec:1.15")
+	implementation("commons-codec:commons-codec:1.19.0")
 
 	// API Documentation
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11")
