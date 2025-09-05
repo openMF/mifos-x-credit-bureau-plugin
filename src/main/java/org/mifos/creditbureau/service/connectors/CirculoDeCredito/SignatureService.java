@@ -1,4 +1,4 @@
-package org.mifos.creditbureau.service.CirculoDeCredito;
+package org.mifos.creditbureau.service.connectors.CirculoDeCredito;
 
 import org.mifos.creditbureau.service.EncryptionService;
 import org.mifos.creditbureau.service.registration.CreditBureauRegistrationReadImplService;
