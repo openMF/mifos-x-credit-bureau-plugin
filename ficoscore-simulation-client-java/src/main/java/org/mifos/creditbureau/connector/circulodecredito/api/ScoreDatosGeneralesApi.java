@@ -224,7 +224,7 @@ public class ScoreDatosGeneralesApi {
         <tr><td> 503 </td><td> SERVICE UNAVAILABLE </td><td>  -  </td></tr>
      </table>
      */
-    public ResponseScore (@javax.annotation.Nonnull String xSignature, @javax.annotation.Nonnull String xApiKey, @javax.annotation.Nonnull String username, @javax.annotation.Nonnull String password, @javax.annotation.Nonnull RequestScoreDG scoreDG) throws ApiException {
+    public ResponseScore getScoreDG(@javax.annotation.Nonnull String xSignature, @javax.annotation.Nonnull String xApiKey, @javax.annotation.Nonnull String username, @javax.annotation.Nonnull String password, @javax.annotation.Nonnull RequestScoreDG scoreDG) throws ApiException {
         ApiResponse<ResponseScore> localVarResp = WithHttpInfo(xSignature, xApiKey, username, password, scoreDG);
         return localVarResp.getData();
     }
