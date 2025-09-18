@@ -1,7 +1,5 @@
-package org.mifos.creditbureau.service.CirculoDeCredito;
+package org.mifos.creditbureau.service.connectors.CirculoDeCredito;
 
-import com.sun.research.ws.wadl.HTTPMethods;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
