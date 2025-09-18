@@ -31,7 +31,7 @@ repositories {
 }
 ext {
 	set("springCloudVersion", "2024.0.1")
-	set("fineractVersion", "0.0.1237-0ce4683")
+	set("fineractVersion", "0.0.1244-9c303fc")
 }
 
 dependencies {
@@ -44,10 +44,13 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-jersey")
 
 	//Hex
-	implementation("commons-codec:commons-codec:1.15")
+	implementation("commons-codec:commons-codec:1.19.0")
 
 	// API Documentation
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11")
+	implementation("io.swagger.core.v3:swagger-jaxrs2:2.2.36")
+	implementation("io.swagger.core.v3:swagger-core-jakarta:2.2.36")
+
 
 	// Jakarta REST / Jersey (JAX-RS)
 	implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0")
@@ -58,11 +61,6 @@ dependencies {
 	// Database & ORM
 	implementation("org.liquibase:liquibase-core")
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
-
-	// Fineract
-	//implementation("org.apache.fineract:fineract-core:${project.ext["fineractVersion"]}")
-	// Optional alternative:
-	// implementation("org.apache.fineract:fineract-provider:${project.ext["fineractVersion"]}:plain")
 
 	// Mapping / Code Generation
 	implementation("org.mapstruct:mapstruct:1.6.3")
