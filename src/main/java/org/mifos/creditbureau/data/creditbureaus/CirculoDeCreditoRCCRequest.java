@@ -2,8 +2,10 @@ package org.mifos.creditbureau.data.creditbureaus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 
+@Data
 @Builder
 @Getter
 @AllArgsConstructor
@@ -13,7 +15,9 @@ public class CirculoDeCreditoRCCRequest {
     @Builder.Default String apellidoMaterno = "string";
     @Builder.Default String fechaNacimiento = "string";
     @Builder.Default String rfc = "string";
+    @Builder.Default Domicilio domicilio = Domicilio.builder().build();
 
+    @Data
     @Builder
     @Getter
     @AllArgsConstructor
