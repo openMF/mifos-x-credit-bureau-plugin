@@ -24,7 +24,14 @@ public class ConsolidatedCreditReportService {
     public ConsolidatedCreditReportService(CreditBureauRegistrationReadImplService creditBureauRegistrationReadService) {
         this.creditBureauRegistrationReadService = creditBureauRegistrationReadService;
     }
+    //TODO: production implementation
+    //1. fetch ClientApiService
+    //2. construct request body
+    //3. fetch signage service
+    //4. construct request header and signage
+    //5. send request to cdc
 
+    //TODO: what happens when any of the strings are empty
     public ResponseEntity<String> testRCCSandboxEndpoint(Long creditBureauId)throws Exception{
         //url
         String url = baseUrl + "sandbox/v1/rcc";
