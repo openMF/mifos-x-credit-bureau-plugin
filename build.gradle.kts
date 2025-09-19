@@ -47,7 +47,7 @@ dependencies {
 	implementation("commons-codec:commons-codec:1.19.0")
 
 	// API Documentation
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
 	implementation("io.swagger.core.v3:swagger-jaxrs2:2.2.36")
 	implementation("io.swagger.core.v3:swagger-core-jakarta:2.2.37")
 
