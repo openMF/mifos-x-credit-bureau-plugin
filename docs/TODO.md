@@ -19,6 +19,8 @@ features that need to be completed or improved in the project.
 ### Retrieving Consolidated Credit Report for Production
 
 - currently connected to sandbox. so data from fineract client has not been used yet. request body is currently hard coded
+- we do not know if it will work if the request does not have all the information required in the request.
+- [ ] implement mapper for fineract client data to rcc dto
 
 
 

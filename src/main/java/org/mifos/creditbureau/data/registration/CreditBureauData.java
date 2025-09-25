@@ -18,8 +18,6 @@ public class CreditBureauData {
 
     private final String creditBureauName;
 
-    private final boolean available;
-
     private final boolean active;
 
     private final String country;
