@@ -47,7 +47,7 @@ dependencies {
 
 	// API Documentation
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
-	implementation("io.swagger.core.v3:swagger-jaxrs2:2.2.38")
+	implementation("io.swagger.core.v3:swagger-jaxrs2:2.2.40")
 	implementation("io.swagger.core.v3:swagger-core-jakarta:2.2.37")
 
 
