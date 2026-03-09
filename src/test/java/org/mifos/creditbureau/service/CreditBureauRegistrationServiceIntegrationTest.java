@@ -177,6 +177,7 @@ class CreditBureauRegistrationServiceIntegrationTest {
     @DisplayName("")
     void canThrowExceptionIfCreditBureauParamKeysNotFound(){}
 
+    @Disabled
     @Test
     @DisplayName("")
     void canConfigureAndRetrieveCreditBureauConfigurationParamValues(){

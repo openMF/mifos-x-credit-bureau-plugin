@@ -8,6 +8,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.mifos.creditbureau.data.registration.CBRegisterParamsData;
 import org.mifos.creditbureau.data.registration.CreditBureauData;
 import org.mifos.creditbureau.data.registration.CreditBureauSummary;
@@ -21,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 @Path("/credit-bureaus")
 @Component
+@Produces(MediaType.APPLICATION_JSON)
 public class CreditBureauRegistrationApiResource {
     private final CreditBureauRegistrationWriteServiceImpl creditBureauRegistrationWriteService;
     private final CreditBureauRegistrationReadService creditBureauRegistrationReadService;
@@ -60,31 +61,34 @@ public class CreditBureauRegistrationApiResource {
 
     @POST
     @Path("")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     //create a Credit Bureau and CBRegisterParams, will not be exposed
-    public ResponseEntity<CreditBureauSummary> createCreditBureau(@RequestBody CreditBureauData creditBureauData) {
+    public Response createCreditBureau(CreditBureauData creditBureauData) {
         CreditBureau createdCreditBureau = creditBureauRegistrationWriteService.createCreditBureau(creditBureauData);
         CreditBureauSummary summary = new CreditBureauSummary(
                 createdCreditBureau.getId(),
                 createdCreditBureau.getCreditBureauName()
         );
-        return ResponseEntity.status(HttpStatus.CREATED).body(summary);
+        return Response.status(Response.Status.CREATED).entity(summary).build();
     }
 
     @GET
     @Path("/{id}")
     //return value is CreditBureauSummary we do not want to expose the Entity itself
-    public ResponseEntity<CreditBureauSummary> getCreditBureauById(@PathParam("id") Long id) {
+    public Response getCreditBureauById(@PathParam("id") Long id) {
         Optional<CreditBureau> creditBureauOpt = creditBureauRepository.findById(id);
 
-        return creditBureauOpt
-                .map(cb -> {
-                    CreditBureauSummary summary = new CreditBureauSummary(
-                            cb.getId(),
-                            cb.getCreditBureauName()
-                    );
-                    return ResponseEntity.ok(summary);
-                })
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        if (creditBureauOpt.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        CreditBureau cb = creditBureauOpt.get();
+
+        CreditBureauSummary summary =
+                new CreditBureauSummary(cb.getId(), cb.getCreditBureauName());
+
+        return Response.ok(summary).build();
     }
 
     @GET
@@ -102,9 +106,9 @@ public class CreditBureauRegistrationApiResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     //Enter the values of the API key into the dto
-    public ResponseEntity<CBRegisterParams> configureCreditBureauParams(@PathParam("id") Long id, @RequestBody CBRegisterParamsData cbRegisterParamsData) {
+    public Response configureCreditBureauParams(@PathParam("id") Long id, CBRegisterParamsData cbRegisterParamsData) {
         CBRegisterParams createdCBParams = creditBureauRegistrationWriteService.configureCreditBureauParamsValues(id, cbRegisterParamsData);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdCBParams);
+        return Response.status(Response.Status.CREATED).entity(createdCBParams).build();
     }
 
     @GET
