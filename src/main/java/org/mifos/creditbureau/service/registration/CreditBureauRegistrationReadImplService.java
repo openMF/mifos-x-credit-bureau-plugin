@@ -19,10 +19,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CreditBureauRegistrationReadImplService implements CreditBureauRegistrationReadService {
 
-    // Inject the JPA repository for CreditBureau entities
     private final CreditBureauRepository creditBureauRepository;
     private final CBRegisterParamRepository cbRegisterParamRepository;
-    // Inject the MapStruct mapper for converting between entities and DTOs
     private final CreditBureauMapper creditBureauMapper;
     private final EncryptionService encryptionService;
 
@@ -65,19 +63,14 @@ public class CreditBureauRegistrationReadImplService implements CreditBureauRegi
                 })
                 .orElse(Collections.emptyMap());
 
-//                .map(CBRegisterParams::getRegistrationParams)
-
-
 
     }
 
     @Override
     @Transactional(readOnly = true) // Use a read-only transaction for performance
     public List<CreditBureauData> getAllCreditBureaus() {
-        // Fetch all CreditBureau entities from the database.
         List<CreditBureau> creditBureaus = creditBureauRepository.findAll();
 
-        // Use Java Streams to map each CreditBureau entity to its corresponding DTO.
         return creditBureaus.stream()
                 .map(creditBureauMapper::toCreditBureauData)
                 .collect(Collectors.toList());

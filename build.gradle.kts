@@ -1,6 +1,8 @@
+import org.gradle.kotlin.dsl.testImplementation
+
 plugins {
 	java
-	id("org.springframework.boot") version "4.0.3"
+	id("org.springframework.boot") version "3.3.5"
 	id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -39,23 +41,17 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework.boot:spring-boot-starter-jersey")
 
 	//Hex
 	implementation("commons-codec:commons-codec:1.21.0")
 
 	// API Documentation
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2")
-	implementation("io.swagger.core.v3:swagger-jaxrs2:2.2.41")
-	implementation("io.swagger.core.v3:swagger-core-jakarta:2.2.44")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
 
 	// Jakarta REST / Jersey (JAX-RS)
 	implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0")
-	implementation("org.glassfish.jersey.containers:jersey-container-servlet:4.0.2")
-	implementation("org.glassfish.jersey.core:jersey-server:4.0.2")
-	implementation("org.glassfish.jersey.inject:jersey-hk2:4.0.2")
 
 	// Database & ORM
 	implementation("org.liquibase:liquibase-core")
@@ -81,4 +77,3 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
-

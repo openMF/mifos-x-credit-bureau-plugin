@@ -24,7 +24,7 @@ public class SecurityTestService {
         this.signatureService = signatureService;
     }
 
-    public ResponseEntity<String> testSecurityEndpoint(Long creditBureauId)throws Exception{
+    public String testSecurityEndpoint(Long creditBureauId)throws Exception{
         String url = CirculoDeCreditoBaseUrl + "/v1/securitytest";
         String requestBody = "{\"attribute\":\"Hello World!\"}";
 
@@ -41,6 +41,6 @@ public class SecurityTestService {
         System.out.println("Status: " + response.getStatusCode());
         System.out.println("Body: " + response.getBody());
 
-        return response;
+        return response.getBody();
     }
 }
