@@ -7,7 +7,6 @@ import jakarta.ws.rs.core.Response;
 import org.mifos.creditbureau.service.connectors.CirculoDeCredito.ConsolidatedCreditReportService;
 import org.mifos.creditbureau.service.connectors.CirculoDeCredito.SecurityTestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Path("/circulo-de-credito")
@@ -25,7 +24,7 @@ public class CirculoDeCreditoApiResource {
     public Response callSecurityTest(@PathParam("creditBureauId") Long creditBureauId) throws Exception{
         return Response.ok(securityTestService.testSecurityEndpoint(creditBureauId)).build();
     }
-
+    /*Sandbox connection*/
     @POST
     @Path("/rcc-test/{creditBureauId}")
     public Response callRCCTest(@PathParam("creditBureauId") Long creditBureauId) throws Exception{

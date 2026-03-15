@@ -1,8 +1,8 @@
 package org.mifos.creditbureau.service;
 
 import org.mifos.creditbureau.data.ClientData;
-import org.mifos.creditbureau.data.models.FineractClientAddressResponse;
-import org.mifos.creditbureau.data.models.FineractClientResponse;
+import org.mifos.creditbureau.data.client.FineractClientAddressResponse;
+import org.mifos.creditbureau.data.client.FineractClientResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

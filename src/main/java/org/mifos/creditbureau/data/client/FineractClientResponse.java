@@ -1,4 +1,4 @@
-package org.mifos.creditbureau.data.models;
+package org.mifos.creditbureau.data.client;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

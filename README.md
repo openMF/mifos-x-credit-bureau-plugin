@@ -1,12 +1,13 @@
 # Mifos X Credit Bureau Plugin
 
 ## Overview
-This plugin provides integration between Mifos X and credit bureau systems. It allows financial institutions using Mifos X to fetch credit reports for customers and submit credit data to credit bureaus.
+This microservice provides integration between Mifos X and credit bureau systems. It allows financial institutions using Mifos X to fetch credit reports for customers and submit credit data to credit bureaus.
 
 ## Features
-- Fetch credit reports for customers from Credit Unions/Bureaus.
-- Fetch clients from Fineract api.
-- RESTful API for integration with Mifos X
+- Register an external credit bureau's secret key(s) to MifosX.
+- Fetch client data from MifosX/Fineract.
+- Send client data to a Credit Bureau.
+- Fetch credit report from a Credit Bureau.
 
 ## Prerequisites
 - Java 21 or higher
@@ -16,13 +17,19 @@ This plugin provides integration between Mifos X and credit bureau systems. It a
 ## Setup
 
 ### 1. Environment Setup
-Export the required encryption key. For example:
+- Generate a random encryption key on your command line.
+```
+openssl rand -base64 32
+```
+- Save the key in a `.env` file OR export the required encryption key in the command line before running the application. For example:
 ```
 export MIFOS_SECURITY_ENCRYPTION_KEY="your-encryption-key"`
 ```
 ### 2. Database Setup
 The project uses MariaDB. A `docker-compose.yml` file is provided to easily start a MariaDB instance.
+```
 docker compose up -d db
+```
 
 ### 3. Application Configuration
 The main configuration is in `src/main/resources/application.properties`. Key properties to review are:
@@ -52,6 +59,7 @@ mifos.fineract.api.username=mifos
 mifos.fineract.api.password=password
 ```
 - **Credit Bureau API:**
+Points to the Credit Bureau API. In this case, circulodecredito.com.mx
 ```
 mifos.circulodecredito.base.url=https://services.circulodecredito.com.mx/
 ```
@@ -61,17 +69,20 @@ mifos.circulodecredito.base.url=https://services.circulodecredito.com.mx/
 ./gradlew build
 ```
 
-### Run
+## Run
 ```bash
 docker compose up -d
 ./gradlew bootRun
 ```
 
 ## API Documentation
+To test the APIs, please take a look at the Postman collection below:
+- Setup new Client and Credit Bureau in MifosX
+  https://documenter.getpostman.com/view/19472254/2sBXigLtC6
+- Test Credit Bureau Service APIs
+  https://documenter.getpostman.com/view/19472254/2sBXigLtC6
 
-## Development
-
-### Running Tests
+## Running Tests
 
 ```bash
 ./gradlew test
