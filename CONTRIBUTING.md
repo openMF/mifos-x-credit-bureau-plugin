@@ -1,5 +1,9 @@
 # Contributing to mifos-x-credit-bureau-plugin
 
+> 📖 For general project overview, architecture, and API reference,
+> see the [README](README.md) and [docs](docs/) folder.
+> This file focuses on local development setup only.
+
 Thank you for your interest in contributing to the Mifos Credit Bureau
 Plugin! This guide will help you get up and running locally.
 
@@ -25,22 +29,39 @@ git clone https://github.com/openMF/mifos-x-credit-bureau-plugin
 cd mifos-x-credit-bureau-plugin
 ```
 
-### Step 2 — Set Required Environment Variables
+### Step 2 — Generate and Set Required Environment Variables
 
-The application requires these environment variables to start:
+The application requires a Base64-encoded AES-256 encryption key to start.
 
-**On Windows PowerShell:**
-```powershell
-$env:MIFOS_SECURITY_ENCRYPTION_KEY="ZGV2bG9jYWxrZXkzMmJ5dGVzcGFkMTIzNDU2Nzg="
-```
+**Generate a secure key:**
 
-**On Mac/Linux:**
+On Mac/Linux:
 ```bash
-export MIFOS_SECURITY_ENCRYPTION_KEY=ZGV2bG9jYWxrZXkzMmJ5dGVzcGFkMTIzNDU2Nzg=
+openssl rand -base64 32
 ```
 
-> ⚠️ This key is for local development only.
-> Never use this key in production.
+On Windows PowerShell:
+```powershell
+[Convert]::ToBase64String(
+  [System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32)
+)
+```
+
+**Set the generated key as environment variable:**
+
+On Mac/Linux:
+```bash
+export MIFOS_SECURITY_ENCRYPTION_KEY=<your-generated-key>
+```
+
+On Windows PowerShell:
+```powershell
+$env:MIFOS_SECURITY_ENCRYPTION_KEY="<your-generated-key>"
+```
+
+> ⚠️ Never commit this key to version control.
+> Never share it with anyone.
+> Generate a new one for each environment.
 
 ### Step 3 — Start MariaDB with Docker
 ```bash
@@ -100,9 +121,20 @@ You should see:
 ## Testing Endpoints
 
 ### Create a Credit Bureau
+
+On Mac/Linux:
+```bash
+curl -u tester:tempPassword123 \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"creditBureauName":"Circulo de Credito","country":"Mexico","active":true,"registrationParamKeys":["apiKey","secretKey"]}' \
+  http://localhost:8080/api/credit-bureaus
+```
+
+On Windows PowerShell:
 ```powershell
-# Windows PowerShell
-Invoke-WebRequest -Uri "http://localhost:8080/api/credit-bureaus" `
+Invoke-WebRequest `
+  -Uri "http://localhost:8080/api/credit-bureaus" `
   -Method POST `
   -Headers @{
     Authorization = "Basic " + [Convert]::ToBase64String(
@@ -110,15 +142,8 @@ Invoke-WebRequest -Uri "http://localhost:8080/api/credit-bureaus" `
     )
     "Content-Type" = "application/json"
   } `
-  -Body '{"creditBureauName":"Circulo de Credito","country":"Mexico","active":true,"registrationParamKeys":["apiKey","secretKey"]}'
-```
-```bash
-# Mac/Linux
-curl -u tester:tempPassword123 \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"creditBureauName":"Circulo de Credito","country":"Mexico","active":true,"registrationParamKeys":["apiKey","secretKey"]}' \
-  http://localhost:8080/api/credit-bureaus
+  -Body '{"creditBureauName":"Circulo de Credito","country":"Mexico","active":true,"registrationParamKeys":["apiKey","secretKey"]}' `
+  -UseBasicParsing
 ```
 
 ### Get Client CDC Request
@@ -138,12 +163,12 @@ POST http://localhost:8080/api/circulo-de-credito/security-test/1
 To test the CDC security endpoint locally without real
 Circulo de Credito API credentials, enable mock mode:
 
-**Windows:**
+On Windows:
 ```powershell
 $env:CDC_MOCK_ENABLED="true"
 ```
 
-**Mac/Linux:**
+On Mac/Linux:
 ```bash
 export CDC_MOCK_ENABLED=true
 ```
@@ -177,29 +202,11 @@ return a mock success response.
 
 ---
 
-## Project Architecture
-```
-mifos-x-credit-bureau-plugin
-│
-├── api/                    # JAX-RS REST endpoints (Jersey)
-├── config/                 # Spring + Jersey configuration
-├── data/                   # DTOs for API request/response
-├── domain/                 # JPA entities + repositories
-├── mappers/                # MapStruct bean mappers
-└── service/                # Business logic
-    ├── connectors/         # External bureau API clients
-    │   └── CirculoDeCredito/
-    ├── registration/       # Bureau registration services
-    └── EncryptionService   # AES-GCM encryption
-```
-
----
-
 ## Common Issues
 
 | Issue | Cause | Fix |
 |-------|-------|-----|
-| `Illegal base64 character` | Missing encryption key env var | Set `MIFOS_SECURITY_ENCRYPTION_KEY` |
+| `Illegal base64 character` | Missing or invalid encryption key | Generate and set `MIFOS_SECURITY_ENCRYPTION_KEY` |
 | `Port 3306 already in use` | Local MySQL running | Change docker-compose port to 3307 |
 | `500 on POST /credit-bureaus` | Missing `registrationParamKeys` field | Include field in request body |
 | `500 on security-test` | No CDC credentials | Enable `CDC_MOCK_ENABLED=true` |
