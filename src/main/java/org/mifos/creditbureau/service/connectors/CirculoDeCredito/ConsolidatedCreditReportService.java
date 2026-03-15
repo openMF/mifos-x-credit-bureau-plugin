@@ -1,5 +1,6 @@
 package org.mifos.creditbureau.service.connectors.CirculoDeCredito;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.mifos.creditbureau.data.CBCreditReportData;
 import org.mifos.creditbureau.data.ClientData;
@@ -40,21 +41,27 @@ public class ConsolidatedCreditReportService {
     private final ClientApiService clientApiService;
     private final CirculoDeCreditoResponseToCBCreditReportDataMapper
             responseMapper;
+    private final SignatureService signatureService;
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     public ConsolidatedCreditReportService(
-            CreditBureauRegistrationReadImplService creditBureauRegistrationReadService,
+            CreditBureauRegistrationReadImplService
+                    creditBureauRegistrationReadService,
             ClientApiService clientApiService,
             CirculoDeCreditoResponseToCBCreditReportDataMapper responseMapper,
+            SignatureService signatureService,
             RestTemplateBuilder restTemplateBuilder) {
         this.creditBureauRegistrationReadService =
                 creditBureauRegistrationReadService;
         this.clientApiService = clientApiService;
         this.responseMapper = responseMapper;
+        this.signatureService = signatureService;
         this.restTemplate = restTemplateBuilder
                 .setConnectTimeout(Duration.ofSeconds(10))
                 .setReadTimeout(Duration.ofSeconds(30))
                 .build();
+        this.objectMapper = new ObjectMapper();
     }
 
     /**
@@ -93,25 +100,21 @@ public class ConsolidatedCreditReportService {
         // Step 2 — Build CDC request from real client data
         CirculoDeCreditoRCCRequest request = buildRequest(clientData);
 
-        // Step 3 — Get bureau API credentials
-        Map<String, String> keys = creditBureauRegistrationReadService
-                .getRegistrationParamMap(creditBureauId);
-        String apiKey = keys.get("x-api-key");
+        // Step 3 — Serialize request to JSON for signing
+        String requestBodyJson = objectMapper.writeValueAsString(request);
 
-        if (apiKey == null || apiKey.isBlank()) {
-            throw new IllegalStateException(
-                    "x-api-key not configured for bureau ID: "
-                            + creditBureauId
-            );
-        }
+        // Step 4 — Build ECDSA signed headers using SignatureService
+        // CDC requires signed headers — not just a raw API key
+        log.info("Building signed headers for bureauId: {}",
+                creditBureauId);
+        Map<String, String> signedHeaders = signatureService
+                .buildHeaders(creditBureauId, requestBodyJson);
 
-        // Step 4 — Build request headers
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("x-api-key", apiKey);
+        signedHeaders.forEach(headers::add);
 
-        HttpEntity<CirculoDeCreditoRCCRequest> entity =
-                new HttpEntity<>(request, headers);
+        HttpEntity<String> entity =
+                new HttpEntity<>(requestBodyJson, headers);
 
         // Step 5 — Send request to CDC production endpoint
         String url = baseUrl + "v1/rcc";
@@ -219,16 +222,17 @@ public class ConsolidatedCreditReportService {
                         .build())
                 .build();
 
-        Map<String, String> keys = creditBureauRegistrationReadService
-                .getRegistrationParamMap(creditBureauId);
-        String apiKey = keys.get("x-api-key");
+        // Serialize and sign the request
+        String requestBodyJson = objectMapper.writeValueAsString(request);
+
+        Map<String, String> signedHeaders = signatureService
+                .buildHeaders(creditBureauId, requestBodyJson);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("x-api-key", apiKey);
+        signedHeaders.forEach(headers::add);
 
-        HttpEntity<CirculoDeCreditoRCCRequest> entity =
-                new HttpEntity<>(request, headers);
+        HttpEntity<String> entity =
+                new HttpEntity<>(requestBodyJson, headers);
 
         try {
             ResponseEntity<String> response = restTemplate.exchange(
