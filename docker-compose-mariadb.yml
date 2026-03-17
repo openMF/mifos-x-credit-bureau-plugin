@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  mariadb:
+    image: mariadb:12.2
+    container_name: creditbureau_mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: mysql
+      MARIADB_DATABASE: creditbureau
+    ports:
+      - "${MARIADB_PORT:-3306}:${MARIADB_PORT:-3306}"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
