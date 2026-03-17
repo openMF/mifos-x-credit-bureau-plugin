@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-jammy AS builder
+FROM eclipse-temurin:25.0.2_10-jdk-jammy AS builder
 LABEL authors="yuwatinyi"
 
 WORKDIR /build
@@ -18,7 +18,7 @@ RUN ./gradlew bootJar --no-daemon -x test
 RUN java -Djarmode=layertools -jar build/libs/*.jar extract --destination /extracted
 
 # === Runtime Stage ===
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:25.0.2_10-jre-jammy
 
 # Create a non-root user for security
 RUN groupadd -r appuser && useradd -r -g appuser -d /app appuser
