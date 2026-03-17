@@ -19,8 +19,6 @@ import org.mifos.creditbureau.domain.CreditBureauRepository;
 import org.mifos.creditbureau.service.registration.CreditBureauRegistrationReadService;
 import org.mifos.creditbureau.service.registration.CreditBureauRegistrationWriteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.*;

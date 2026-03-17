@@ -8,14 +8,36 @@ services:
       MARIADB_ROOT_PASSWORD: mysql
       MARIADB_DATABASE: creditbureau
     ports:
-      - "3306:3306"
+      - "${MARIADB_PORT:-3306}:${MARIADB_PORT:-3306}"
     volumes:
       - mariadb_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmysql"]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
+
+  creditbureau:
+    build: .
+    container_name: creditbureau-plugin
+    ports:
+      - "${PLUGIN_PORT:-8080}:${PLUGIN_PORT:-8080}"
+      - "${PLUGIN_PORT_SECOND:-8081}:${PLUGIN_PORT_SECOND:-8081}"
+    environment:
+      MIFOS_SECURITY_ENCRYPTION_KEY: ${MIFOS_SECURITY_ENCRYPTION_KEY}
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:${MARIADB_PORT:-3306}/creditbureau
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: mysql
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:${PLUGIN_PORT:-8080}/actuator/health" ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
 volumes:
   mariadb_data:

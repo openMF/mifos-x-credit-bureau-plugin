@@ -42,6 +42,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-jersey")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 
 	//Hex
 	implementation("commons-codec:commons-codec:1.21.0")
