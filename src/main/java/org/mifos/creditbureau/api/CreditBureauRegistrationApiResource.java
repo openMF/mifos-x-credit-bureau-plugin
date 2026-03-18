@@ -11,9 +11,10 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.mifos.creditbureau.data.registration.CBRegisterParamsData;
+import org.mifos.creditbureau.data.registration.CreditBureauConfigRequest;
+import org.mifos.creditbureau.data.registration.CreditBureauConfigResponse;
 import org.mifos.creditbureau.data.registration.CreditBureauData;
 import org.mifos.creditbureau.data.registration.CreditBureauSummary;
-import org.mifos.creditbureau.data.registration.CreditBureauConfigRequest;
 import org.mifos.creditbureau.domain.CBRegisterParams;
 import org.mifos.creditbureau.domain.CreditBureau;
 import org.mifos.creditbureau.domain.CreditBureauRepository;
@@ -100,11 +101,11 @@ public class CreditBureauRegistrationApiResource {
     public Response configureCreditBureauParams(@PathParam("id") Long id,
                                                 @Valid CreditBureauConfigRequest configRequest) {
         if (configRequest == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Request body must not be null").build();
+            throw new IllegalArgumentException("Request body must not be null");
         }
 
         if (configRequest.getOrganisationCreditBureauId() != null && !id.equals(configRequest.getOrganisationCreditBureauId())) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Path id does not match organisationCreditBureauId in payload").build();
+            throw new IllegalArgumentException("Path id does not match organisationCreditBureauId in payload");
         }
 
         Map<String, String> params = new HashMap<>();
@@ -124,7 +125,16 @@ public class CreditBureauRegistrationApiResource {
 
         CBRegisterParamsData cbRegisterParamsData = CBRegisterParamsData.builder().registrationParams(params).build();
         CBRegisterParams createdCBParams = creditBureauRegistrationWriteService.configureCreditBureauParamsValues(id, cbRegisterParamsData);
-        return Response.status(Response.Status.CREATED).entity(createdCBParams).build();
+        
+        // Return response DTO that masks sensitive values
+        CreditBureauConfigResponse response = CreditBureauConfigResponse.builder()
+                .id(createdCBParams.getId())
+                .organisationCreditBureauId(id)
+                .configuredKeys(params.keySet())
+                .message("Credit bureau configuration updated successfully")
+                .build();
+        
+        return Response.status(Response.Status.CREATED).entity(response).build();
     }
 
     @GET
