@@ -32,6 +32,7 @@ public class CreditBureauMapper {
                 .creditBureauName(creditBureau.getCreditBureauName())
                 .active(creditBureau.isActive())
                 .country(creditBureau.getCountry())
+                .bureauType(creditBureau.getBureauType())
                 .registrationParamKeys(registrationParamKeys)
                 .build();
     }
@@ -46,6 +47,9 @@ public class CreditBureauMapper {
         creditBureau.setCreditBureauName(creditBureauData.getCreditBureauName());
         creditBureau.setActive(creditBureauData.isActive());
         creditBureau.setCountry(creditBureauData.getCountry());
+        creditBureau.setBureauType(creditBureauData.getBureauType() != null
+                ? creditBureauData.getBureauType()
+                : "CIRCULO_DE_CREDITO");
 
         // Registration Params handled in the service layer
 
