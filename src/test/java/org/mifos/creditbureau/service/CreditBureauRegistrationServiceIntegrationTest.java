@@ -1,8 +1,8 @@
 package org.mifos.creditbureau.service;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mifos.creditbureau.data.registration.CreditBureauData;
@@ -22,7 +22,7 @@ import org.mifos.creditbureau.mappers.CreditBureauMapper;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-//Tests look super messy
+
 @DataJpaTest
 @Import({CreditBureauRegistrationWriteServiceImpl.class, CreditBureauRegistrationReadImplService.class,
         EncryptionService.class, org.mifos.creditbureau.config.BouncyCastleConfig.class, CreditBureauMapper.class})
@@ -69,7 +69,6 @@ class CreditBureauRegistrationServiceIntegrationTest {
                 .build();
 
         creditBureauDataParams = CBRegisterParamsData.builder()
-                // Add individual registration parameters using the singular form method
                 .registrationParam("username", "testUser")
                 .registrationParam("password", "testPassword")
                 .registrationParam("apiKey", "1234567890123456")
@@ -91,7 +90,6 @@ class CreditBureauRegistrationServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        // Create and save test credit bureaus
         savedBureau = writeService.createCreditBureau(creditBureauData);
         bureauId = savedBureau.getId();
 
@@ -99,97 +97,86 @@ class CreditBureauRegistrationServiceIntegrationTest {
         bureauId1 = savedBureau1.getId();
     }
 
-    @Disabled
     @Test
-    @DisplayName("")
-    void canThrowExceptionIfCreditBureauNotFound(){}
+    @DisplayName("Retrieving params for non-existent bureau throws EntityNotFoundException")
+    void canThrowExceptionIfCreditBureauNotFound() {
+        assertThrows(EntityNotFoundException.class,
+                () -> readService.getCreditBureauParams(999L));
+    }
 
     @Test
-    @DisplayName( "Can create and save a credit bureau, created credit bureau should have also have created ")
-    void canCreateAndSaveCreditBureau(){
-        //action
-        //reads Test Bureau's registration parameter keys
+    @DisplayName("Can create and save a credit bureau, created credit bureau should have also have created ")
+    void canCreateAndSaveCreditBureau() {
         List<String> keys = readService.getCreditBureauParamKeys(bureauId);
-
-        //reads Test Bureau 1's registration parameter keys
         List<String> keys1 = readService.getCreditBureauParamKeys(bureauId1);
 
-        // assertions
         assertNotNull(savedBureau);
         assertNotNull(savedBureau1);
 
-        // Verify IDs are generated
         assertNotNull(bureauId);
         assertNotNull(bureauId1);
 
-        // Verify properties of the first credit bureau
         assertEquals("Test Bureau", savedBureau.getCreditBureauName());
         assertEquals("United States", savedBureau.getCountry());
         assertFalse(savedBureau.isActive());
 
-        //Verify if the right keys are there for the first credit bureau
         assertEquals(3, keys.size());
         assertTrue(keys.contains("username"));
         assertTrue(keys.contains("password"));
         assertTrue(keys.contains("apiKey"));
 
-        // Verify properties of the second credit bureau
         assertEquals("Test Bureau 1", savedBureau1.getCreditBureauName());
         assertEquals("Mexico", savedBureau1.getCountry());
         assertFalse(savedBureau1.isActive());
 
-        //Verify if the right keys are there for the second credit bureau
         assertEquals(2, keys1.size());
         assertTrue(keys1.contains("publicKey"));
         assertTrue(keys1.contains("privateKey"));
-
     }
 
-
-
     @Test
-    void canRetrieveAllCreditBureaus(){
-        // Verify credit bureaus are in the database
+    void canRetrieveAllCreditBureaus() {
         List<CreditBureauData> allBureaus = readService.getAllCreditBureaus();
         assertNotNull(allBureaus);
         assertTrue(allBureaus.size() == 2);
     }
 
     @Test
-    void canRetrieveCreditBureauById(){
-        // Verify the credit bureaus can be found in the repository
+    void canRetrieveCreditBureauById() {
         assertTrue(creditBureauRepository.findById(bureauId).isPresent());
         assertTrue(creditBureauRepository.findById(bureauId1).isPresent());
     }
 
-    @Disabled
     @Test
-    @DisplayName( "User can only view Credit Bureaus with configured param keys")
-    void canThrowExceptionIfCreditBureauNotFoundById(){}
+    @DisplayName("Retrieving param keys for non-existent bureau throws EntityNotFoundException")
+    void canThrowExceptionIfCreditBureauNotFoundById() {
+        assertThrows(EntityNotFoundException.class,
+                () -> readService.getCreditBureauParamKeys(999L));
+    }
 
-    @Disabled
     @Test
-    @DisplayName( "User should not be able view Credit Bureau if Param Keys have not been configured")
-    void canThrowExceptionIfCreditBureauParamKeysAreEmpty(){}
+    @DisplayName("Retrieving param values for non-existent bureau throws EntityNotFoundException")
+    void canThrowExceptionIfCreditBureauParamKeysAreEmpty() {
+        assertThrows(EntityNotFoundException.class,
+                () -> readService.getRegistrationParamMap(999L));
+    }
 
-    @Disabled
     @Test
-    @DisplayName("")
-    void canThrowExceptionIfCreditBureauParamKeysNotFound(){}
+    @DisplayName("getCreditBureauParams for non-existent ID throws EntityNotFoundException")
+    void canThrowExceptionIfCreditBureauParamKeysNotFound() {
+        assertThrows(EntityNotFoundException.class,
+                () -> readService.getCreditBureauParams(999L));
+    }
 
-    @Disabled
     @Test
-    @DisplayName("")
-    void canConfigureAndRetrieveCreditBureauConfigurationParamValues(){
-        //configures param values
-        writeService.configureCreditBureauParamsValues(bureauId,creditBureauDataParams);
-        writeService.configureCreditBureauParamsValues(bureauId1,creditBureauData1Params);
+    @DisplayName("Can configure and then retrieve decrypted credit bureau param values")
+    void canConfigureAndRetrieveCreditBureauConfigurationParamValues() {
+        writeService.configureCreditBureauParamsValues(bureauId, creditBureauDataParams);
+        writeService.configureCreditBureauParamsValues(bureauId1, creditBureauData1Params);
 
-        //retrieves the param values
         Map<String, String> values = readService.getRegistrationParamMap(bureauId);
         Map<String, String> values1 = readService.getRegistrationParamMap(bureauId1);
 
-        //tests
         assertNotNull(values);
         assertNotNull(values1);
         assertEquals(3, values.size());
@@ -199,20 +186,21 @@ class CreditBureauRegistrationServiceIntegrationTest {
         assertEquals("1234567890123456", values.get("apiKey"));
         assertEquals("09876543210987", values1.get("publicKey"));
         assertEquals("abcdefghijk23", values1.get("privateKey"));
-
-
-
     }
 
-    @Disabled
     @Test
-    @DisplayName("")
-    void canThrowExceptionIfConfiguringValuesForNonEmptyValues(){}
+    @DisplayName("Configuring values for already-configured bureau throws IllegalStateException")
+    void canThrowExceptionIfConfiguringValuesForNonEmptyValues() {
+        writeService.configureCreditBureauParamsValues(bureauId, creditBureauDataParams);
 
-    @Disabled
+        assertThrows(IllegalStateException.class,
+                () -> writeService.configureCreditBureauParamsValues(bureauId, creditBureauDataParams));
+    }
+
     @Test
-    @DisplayName("")
-    void canThrowExceptionIfCreditBureauParamValuesNotFound(){}
-
-
+    @DisplayName("Configuring values for non-existent bureau throws EntityNotFoundException")
+    void canThrowExceptionIfCreditBureauParamValuesNotFound() {
+        assertThrows(EntityNotFoundException.class,
+                () -> writeService.configureCreditBureauParamsValues(999L, creditBureauDataParams));
+    }
 }
