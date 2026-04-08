@@ -101,6 +101,14 @@ public class CreditBureauRegistrationWriteServiceImpl
 
         // FIX: Added null check on valueMap before iterating
         if (valueMap != null && existingMap != null) {
+            boolean hasConfiguredValues = existingMap.values().stream()
+                    .anyMatch(v -> v != null && !v.isEmpty());
+            if (hasConfiguredValues) {
+                throw new IllegalStateException(
+                        "Credit bureau params already configured for bureau: " + bureauId
+                                + ". Use update endpoint to modify existing values.");
+            }
+
             valueMap.forEach((key, value) -> {
                 if (key != null && existingMap.containsKey(key)) {
                     try {
