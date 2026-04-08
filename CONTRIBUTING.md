@@ -65,7 +65,7 @@ $env:MIFOS_SECURITY_ENCRYPTION_KEY="<your-generated-key>"
 
 ### Step 3 — Start MariaDB with Docker
 ```bash
-docker-compose up -d
+docker compose -f docker-compose-mariadb.yml up
 ```
 
 Wait 30 seconds then verify it is running:
@@ -217,11 +217,11 @@ return a mock success response.
 ## Making a Pull Request
 
 1. Fork the repository
-2. Create a branch: `git checkout -b fix/your-fix-name`
+2. Create a branch: `git checkout -b <new-branch-name>`
 3. Make your changes
 4. Run tests: `./gradlew test`
-5. Commit: `git commit -m "fix: description of your fix"`
-6. Push: `git push origin fix/your-fix-name`
+5. Commit: `git commit -m "MX-[TICKET-NUMBER] - TICKET TITLE"`
+6. Push: `git push origin <new-branch-name>`
 7. Open a Pull Request on GitHub
 
 ---

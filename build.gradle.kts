@@ -47,10 +47,6 @@ dependencies {
 	//Hex
 	implementation("commons-codec:commons-codec:1.21.0")
 
-	// API Documentation
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16")
-
-
 	// Jakarta REST / Jersey (JAX-RS)
 	implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0")
 
