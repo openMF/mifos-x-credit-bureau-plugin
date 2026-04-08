@@ -95,7 +95,7 @@ To test the APIs, please take a look at the Postman collection below:
 - Setup new Client and Credit Bureau in MifosX
   https://documenter.getpostman.com/view/19472254/2sBXigLtC6
 - Test Credit Bureau Service APIs
-  https://documenter.getpostman.com/view/19472254/2sBXigLtC6
+  https://documenter.getpostman.com/view/19472254/2sB3QCRskT
 
 ## Running Tests
 
