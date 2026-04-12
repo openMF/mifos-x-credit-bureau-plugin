@@ -15,6 +15,7 @@ import org.mifos.creditbureau.data.registration.CreditBureauConfigRequest;
 import org.mifos.creditbureau.data.registration.CreditBureauConfigResponse;
 import org.mifos.creditbureau.data.registration.CreditBureauData;
 import org.mifos.creditbureau.data.registration.CreditBureauSummary;
+import org.mifos.creditbureau.data.registration.KeyTypeDTO;
 import org.mifos.creditbureau.domain.CBRegisterParams;
 import org.mifos.creditbureau.domain.CreditBureau;
 import org.mifos.creditbureau.domain.CreditBureauRepository;
@@ -109,28 +110,44 @@ public class CreditBureauRegistrationApiResource {
         }
 
         Map<String, String> params = new HashMap<>();
-        if (configRequest.getRegistrationParams() != null) {
-            params.putAll(configRequest.getRegistrationParams());
+
+        if (configRequest.getKeys() != null && !configRequest.getKeys().isEmpty()) {
+            for (KeyTypeDTO keyEntry : configRequest.getKeys()) {
+                String key = keyEntry.getKeyType() + ":" + keyEntry.getFormat();
+                params.put(key, keyEntry.getValue());
+            }
         }
 
-        if (configRequest.getUsername() != null) {
-            params.put("username", configRequest.getUsername());
-        }
-        if (configRequest.getXApiKey() != null) {
-            params.put("x-api-key", configRequest.getXApiKey());
-        }
-        if (configRequest.getCertificate() != null) {
-            params.put("certificate", configRequest.getCertificate());
-        }
+        params.put("bureauType", configRequest.getBureauType());
 
-        CBRegisterParamsData cbRegisterParamsData = CBRegisterParamsData.builder().registrationParams(params).build();
-        CBRegisterParams createdCBParams = creditBureauRegistrationWriteService.configureCreditBureauParamsValues(id, cbRegisterParamsData);
-        
-        // Return response DTO that masks sensitive values
+        CBRegisterParamsData cbRegisterParamsData = CBRegisterParamsData.builder()
+                .registrationParams(params)
+                .build();
+
+        CBRegisterParams createdCBParams = creditBureauRegistrationWriteService
+                .configureCreditBureauParamsValues(id, cbRegisterParamsData);
+
         CreditBureauConfigResponse response = CreditBureauConfigResponse.builder()
                 .id(createdCBParams.getId())
                 .organisationCreditBureauId(id)
-                .configuredKeys(params.keySet())
+                .bureauType(configRequest.getBureauType())
+                .configuredKeyTypes(configRequest.getKeys().stream()
+                        .map(k -> k.getKeyType() + ":" + k.getFormat())
+                        .collect(Collectors.toList()))
+                .message("Credit bureau configuration updated successfully")
+                .build();
+
+        return Response.status(Response.Status.CREATED).entity(response).build();
+    }
+
+    @GET
+    @Path("/{id}/configuration-map")
+    public Map<String, String> getCBRegisterParamsById(@PathParam("id") Long id) {
+        Map<String, String> cbRegisterParams = creditBureauRegistrationReadService.getRegistrationParamMap(id);
+        return Optional.ofNullable(cbRegisterParams).orElse(Collections.emptyMap());
+    }
+
+}
                 .message("Credit bureau configuration updated successfully")
                 .build();
         
