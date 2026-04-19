@@ -1,8 +1,9 @@
 package org.mifos.creditbureau.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,17 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * Verifies AES-256-GCM encryption and decryption behaviour including:
  * round-trip correctness, IV randomness, tamper detection, and edge cases.
  */
+@SpringBootTest
 class EncryptionServiceUnitTest {
 
+    @Autowired
     private EncryptionService encryptionService;
-
-    // Base64-encoded 32-byte AES-256 key (matches test application.properties)
-    private static final String TEST_KEY = "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVoxMjM0NTY=";
-
-    @BeforeEach
-    void setUp() {
-        encryptionService = new EncryptionService(TEST_KEY);
-    }
 
     @Test
     @DisplayName("encrypt() should return a non-null, non-empty Base64 string")
@@ -33,7 +28,6 @@ class EncryptionServiceUnitTest {
 
         assertNotNull(encrypted, "Encrypted value should not be null");
         assertFalse(encrypted.isEmpty(), "Encrypted value should not be empty");
-        // Should not throw when decoded as Base64
         assertDoesNotThrow(() -> java.util.Base64.getDecoder().decode(encrypted),
                 "Encrypted value should be valid Base64");
     }
@@ -61,7 +55,6 @@ class EncryptionServiceUnitTest {
         assertNotEquals(encrypted1, encrypted2,
                 "Two encryptions of the same plaintext should produce different ciphertexts (random IV)");
 
-        // But both should decrypt to the same value
         assertEquals(encryptionService.decrypt(encrypted1),
                 encryptionService.decrypt(encrypted2),
                 "Both ciphertexts should decrypt to the same original plaintext");
@@ -73,7 +66,6 @@ class EncryptionServiceUnitTest {
         String plaintext = "sensitive-data";
         String encrypted = encryptionService.encrypt(plaintext);
 
-        // Tamper with the ciphertext by flipping a character in the middle
         char[] chars = encrypted.toCharArray();
         int midpoint = chars.length / 2;
         chars[midpoint] = (chars[midpoint] == 'A') ? 'B' : 'A';
@@ -111,7 +103,6 @@ class EncryptionServiceUnitTest {
     @Test
     @DisplayName("encrypt/decrypt should handle a long string (simulating large API keys)")
     void encryptAndDecryptLongString() throws Exception {
-        // Build a long string simulating a large API key or certificate
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 1000; i++) {
             sb.append("LongApiKeySegment-").append(i).append("-");
