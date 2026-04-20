@@ -18,7 +18,8 @@ import java.util.Map;
 
 @AllArgsConstructor
 @Service
-public class CreditBureauRegistrationWriteServiceImpl implements CreditBureauRegistrationWriteService {
+public class CreditBureauRegistrationWriteServiceImpl
+        implements CreditBureauRegistrationWriteService {
 
     private final CreditBureauMapper creditBureauMapper;
     private final CBRegisterParamRepository CBRegisterParamRepository;
@@ -28,28 +29,42 @@ public class CreditBureauRegistrationWriteServiceImpl implements CreditBureauReg
     @Override
     @Transactional
     public CreditBureau createCreditBureau(CreditBureauData creditBureauData) {
-        //Create a Credit Bureau with basic info
-        CreditBureau creditBureau = creditBureauMapper.toCreditBureau(creditBureauData);
 
-        //Create CBRegisterParams with empty values for all keys
+        // Validate input
+        if (creditBureauData == null) {
+            throw new IllegalArgumentException(
+                    "CreditBureauData must not be null"
+            );
+        }
+
+        CreditBureau creditBureau =
+                creditBureauMapper.toCreditBureau(creditBureauData);
         CBRegisterParams cbRegisterParams = new CBRegisterParams();
 
-        //Initialize the registration params with keys from creditBureauData
+        // Initialize the registration params with keys from creditBureauData
         Map<String, String> registrationParams = new HashMap<>();
-        for(String key : creditBureauData.getRegistrationParamKeys()){
-            registrationParams.put(key, "");
+
+        // FIX: Added null check before iterating registrationParamKeys
+        // Previously caused NullPointerException when keys not provided
+        if (creditBureauData.getRegistrationParamKeys() != null) {
+            for (String key : creditBureauData.getRegistrationParamKeys()) {
+                if (key != null && !key.isBlank()) {
+                    registrationParams.put(key, "");
+                }
+            }
         }
-        cbRegisterParams.setRegistrationParams(new HashMap<>(registrationParams)); // Create a new HashMap to ensure JPA detects the change
+
+        // Create a new HashMap to ensure JPA detects the change
+        cbRegisterParams.setRegistrationParams(
+                new HashMap<>(registrationParams)
+        );
 
         // Save CreditBureau first to generate its ID
         creditBureau = creditBureauRepository.saveAndFlush(creditBureau);
 
-        // Now that creditBureau has an ID, set it on cbRegisterParams
         cbRegisterParams.setCreditBureau(creditBureau);
-        // Also set the parameter on the creditBureau for consistency and cascade if needed
         creditBureau.setCreditBureauParameter(cbRegisterParams);
 
-        // Save CBRegisterParams, which is the owning side and uses @MapsId
         CBRegisterParamRepository.save(cbRegisterParams);
 
         return creditBureau;
@@ -57,51 +72,94 @@ public class CreditBureauRegistrationWriteServiceImpl implements CreditBureauReg
 
     @Override
     @Transactional
-    /*
-    - Configures the values in the hashmap registerparams
-    - can only be done if the keys already exist. so if the keys in the data match the keys in the database/entity
-    * */
-    public CBRegisterParams configureCreditBureauParamsValues(Long bureauId, CBRegisterParamsData cbRegisterParamsData) { //takes a dto
-        CBRegisterParams existingParams = CBRegisterParamRepository.findById(bureauId)
-                .orElseThrow(() -> new EntityNotFoundException("CBRegisterParams not found with id: " + bureauId));
+    public CBRegisterParams configureCreditBureauParamsValues(
+            Long bureauId,
+            CBRegisterParamsData cbRegisterParamsData) {
 
-        Map<String, String> existingMap = existingParams.getRegistrationParams();
-        Map<String, String> valueMap = cbRegisterParamsData.getRegistrationParams();
+        // Validate input
+        if (bureauId == null) {
+            throw new IllegalArgumentException(
+                    "Bureau ID must not be null"
+            );
+        }
+        if (cbRegisterParamsData == null) {
+            throw new IllegalArgumentException(
+                    "CBRegisterParamsData must not be null"
+            );
+        }
 
-        valueMap.forEach((key, value) ->{
-            if(existingMap.containsKey(key)) {
-                try {
-                    existingMap.put(key, encryptionService.encrypt(value));
-                } catch (Exception e) {
-                    throw new RuntimeException("Error encrypting parameter: " + e);
-                }
+        CBRegisterParams existingParams = CBRegisterParamRepository
+                .findById(bureauId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "CBRegisterParams not found with id: " + bureauId
+                ));
+
+        Map<String, String> existingMap =
+                existingParams.getRegistrationParams();
+        Map<String, String> valueMap =
+                cbRegisterParamsData.getRegistrationParams();
+
+        // FIX: Added null check on valueMap before iterating
+        if (valueMap != null && existingMap != null) {
+            boolean hasConfiguredValues = existingMap.values().stream()
+                    .anyMatch(v -> v != null && !v.isEmpty());
+            if (hasConfiguredValues) {
+                throw new IllegalStateException(
+                        "Credit bureau params already configured for bureau: " + bureauId
+                                + ". Use update endpoint to modify existing values.");
             }
-        });
-//        for(Map.Entry<String, String> entry : valueMap.entrySet()){
-//            String key = entry.getKey();
-//            if(existingMap.containsKey(key)){
-//                existingMap.put(key, entry.getValue());
-//            }
-//        }
+
+            valueMap.forEach((key, value) -> {
+                if (key != null && existingMap.containsKey(key)) {
+                    try {
+                        existingMap.put(key, encryptionService.encrypt(value));
+                    } catch (Exception e) {
+                        throw new RuntimeException(
+                                "Error encrypting parameter for key: "
+                                        + key + " — " + e.getMessage()
+                        );
+                    }
+                }
+            });
+        }
 
         return CBRegisterParamRepository.save(existingParams);
     }
 
     @Override
-    //should not be exposed to the controller only internally
-    public void configureCreditBureauParamsKeys(Long bureauId, CBRegisterParamsData cbRegisterParamsData) {
+    public void configureCreditBureauParamsKeys(
+            Long bureauId,
+            CBRegisterParamsData cbRegisterParamsData) {
 
-        CBRegisterParams existingParams = CBRegisterParamRepository.findById(bureauId)
-                .orElseThrow(() -> new EntityNotFoundException("CBRegisterParams not found with id: " + bureauId));
+        // Validate input
+        if (bureauId == null) {
+            throw new IllegalArgumentException(
+                    "Bureau ID must not be null"
+            );
+        }
+        if (cbRegisterParamsData == null) {
+            throw new IllegalArgumentException(
+                    "CBRegisterParamsData must not be null"
+            );
+        }
 
-        Map<String, String> existingMap = existingParams.getRegistrationParams();
-        Map<String, String> dtoMap = cbRegisterParamsData.getRegistrationParams();
+        CBRegisterParams existingParams = CBRegisterParamRepository
+                .findById(bureauId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "CBRegisterParams not found with id: " + bureauId
+                ));
 
-        // Add keys from the DTO to the existing map with empty values
-        // Only add keys that don't already exist in the map
-        for (String key : dtoMap.keySet()) {
-            if (!existingMap.containsKey(key)) {
-                existingMap.put(key, "");
+        Map<String, String> existingMap =
+                existingParams.getRegistrationParams();
+        Map<String, String> dtoMap =
+                cbRegisterParamsData.getRegistrationParams();
+
+        // FIX: Added null checks on both maps before iterating
+        if (dtoMap != null && existingMap != null) {
+            for (String key : dtoMap.keySet()) {
+                if (key != null && !existingMap.containsKey(key)) {
+                    existingMap.put(key, "");
+                }
             }
         }
 
@@ -110,11 +168,17 @@ public class CreditBureauRegistrationWriteServiceImpl implements CreditBureauReg
 
     @Override
     public void updateCreditBureau() {
-
+        // TODO: Implement credit bureau update logic
+        throw new UnsupportedOperationException(
+                "updateCreditBureau not yet implemented"
+        );
     }
 
     @Override
     public void updateCreditBureauParams() {
-
+        // TODO: Implement credit bureau params update logic
+        throw new UnsupportedOperationException(
+                "updateCreditBureauParams not yet implemented"
+        );
     }
 }

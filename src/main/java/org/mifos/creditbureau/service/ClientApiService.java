@@ -1,21 +1,17 @@
 package org.mifos.creditbureau.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.mifos.creditbureau.data.ClientData;
-import org.mifos.creditbureau.data.models.FineractClientAddressResponse;
-import org.mifos.creditbureau.data.models.FineractClientResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mifos.creditbureau.data.client.FineractClientAddressResponse;
+import org.mifos.creditbureau.data.client.FineractClientResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,13 +42,24 @@ public class ClientApiService{
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         String clientUrl  = fineractApiClientBaseUrl + clientId;
-        //FineractClientResponse apiResponse = restTemplate.getForObject(clientUrl, FineractClientResponse.class);
-        ResponseEntity<FineractClientResponse> apiResponseEntity = restTemplate.exchange(clientUrl, HttpMethod.GET, entity, FineractClientResponse.class);
+        ResponseEntity<FineractClientResponse> apiResponseEntity;
+        try {
+            apiResponseEntity = restTemplate.exchange(clientUrl, HttpMethod.GET, entity, FineractClientResponse.class);
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to fetch client from Fineract for clientId=" + clientId, e);
+        }
         FineractClientResponse apiResponse = apiResponseEntity.getBody();
+        if (apiResponse == null) {
+            throw new IllegalStateException("Fineract returned an empty client payload for clientId=" + clientId);
+        }
 
         String addressUrl = fineractApiClientAddressBaseUrl + clientId + "/addresses";
-        //FineractClientAddressResponse addressResponse = restTemplate.getForObject(addressUrl, FineractClientAddressResponse.class);
-        ResponseEntity<FineractClientAddressResponse[]> addressResponseEntity = restTemplate.exchange(addressUrl, HttpMethod.GET, entity, FineractClientAddressResponse[].class);
+        ResponseEntity<FineractClientAddressResponse[]> addressResponseEntity;
+        try {
+            addressResponseEntity = restTemplate.exchange(addressUrl, HttpMethod.GET, entity, FineractClientAddressResponse[].class);
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to fetch client addresses from Fineract for clientId=" + clientId, e);
+        }
         FineractClientAddressResponse[] addressResponse = addressResponseEntity.getBody();
 
         FineractClientAddressResponse firstAddressResponse = addressResponse != null && addressResponse.length > 0 //what if i need multiple addresses
@@ -60,9 +67,9 @@ public class ClientApiService{
                 : null;
 
         List<String> streetAddress = Stream.of(
-                        firstAddressResponse.getAddressLine1(),
-                        firstAddressResponse.getAddressLine2(),
-                        firstAddressResponse.getAddressLine3()
+                        firstAddressResponse != null ? firstAddressResponse.getAddressLine1() : null,
+                        firstAddressResponse != null ? firstAddressResponse.getAddressLine2() : null,
+                        firstAddressResponse != null ? firstAddressResponse.getAddressLine3() : null
                 )
                 .filter(s -> s != null && !s.isBlank())
                 .collect(Collectors.toList());
@@ -76,16 +83,16 @@ public class ClientApiService{
                 .dateOfBirth(apiResponse.getDateOfBirth())
                 .phoneNumber(apiResponse.getMobileNo())
                 .emailAddress(apiResponse.getEmailAddress())
-                .nationality(firstAddressResponse.getCountryName())
+                .nationality(firstAddressResponse != null ? firstAddressResponse.getCountryName() : null)
 
-                .addressType(firstAddressResponse.getAddressType())
-                .addressId(firstAddressResponse.getId())
+                .addressType(firstAddressResponse != null ? firstAddressResponse.getAddressType() : null)
+                .addressId(firstAddressResponse != null ? firstAddressResponse.getId() : null)
                 .streetAddress(streetAddress)
-                .townVillage(firstAddressResponse.getTownVillage())
-                .city(firstAddressResponse.getCity())
-                .stateProvince(firstAddressResponse.getStateName())
-                .country(firstAddressResponse.getCountryName())
-                .postalCode(firstAddressResponse.getPostalCode())
+                .townVillage(firstAddressResponse != null ? firstAddressResponse.getTownVillage() : null)
+                .city(firstAddressResponse != null ? firstAddressResponse.getCity() : null)
+                .stateProvince(firstAddressResponse != null ? firstAddressResponse.getStateName() : null)
+                .country(firstAddressResponse != null ? firstAddressResponse.getCountryName() : null)
+                .postalCode(firstAddressResponse != null ? firstAddressResponse.getPostalCode() : null)
 
                 .build();
 

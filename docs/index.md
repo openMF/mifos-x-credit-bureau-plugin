@@ -21,11 +21,11 @@
 - H2 database and Junit testing
 
 ## APIs
+### Base URL
 `http://localhost:8080/api`
 ### Authentication
 ```
 #application.properties
-
 spring.security.user.name=tester
 spring.security.user.password=tempPassword123
 
@@ -57,22 +57,36 @@ Access APIs after registering
 
 | Method | Endpoint | Description |
 |---|---|---|
-|`POST` | `/circulo-de-credito/security-test/{creditBureauId}`
-|`POST` |
+|`POST` | `/circulo-de-credito/security-test/{creditBureauId}`| Sends a request to Circulo De Credit to verify if the keys signage method is working. (Circulo De Credit can recognize APIs signed through the SignatureService) |
+|`POST` | `/circulo-de-credito/rcc-test/{creditBureauId}`| Uses a hard coded request body to send a request to Circulo De Credito to check the credit report returned by the API.|
 
 ## Modules
 
-| Module   | Description                   |
-|----------|-------------------------------|
-| `api`    | controller classes            
-| `config` | configuration classes         
-| `data`   | DTOs                          |
-|          | `creditbureaus`               |
-|          | `models`                      |
-|| `registration`                |
-|`domain` | entity classes                
-|`exception` | exception handling classes    
-|`mappers` | dto to entity mapping classes 
-|`service` | business action classes       
+| Module               | Description                                                                    |
+|----------------------|--------------------------------------------------------------------------------|
+| `api`                | Currently, this module has 4 controller classes                                |    
+| `config`             | Configurations                                                                 |   
+| `data`               | Data Objects (DTOs) of the data used in the service.                           |
+| `data/creditbureaus` | Data objects related to credit bureaus including request and response formats. |
+| `data/fineract`      | Data objects related to fineract connection.                                   |
+| `data/registration`  | Data objects related to registering a credit bureau.                           |
+| `domain`             | Entities of Credit Bureaus                                                                
+| `exception`          | Exception Handling                                                    
+| `mappers`            | Mapping Data Transfer Objects.                                                
+| `service`            | Business Logic                                                      
 
+## Workflow
 
+ <img width="1221" height="577" alt="Screenshot 2025-11-19 at 6 36 21 PM" src="https://gist.github.com/user-attachments/assets/9df91186-1ae8-46c8-b918-f3579da51f33" />
+
+- The user/bank officers externally register with the Credit Bureau to use their APIs (1, 2, 3)
+- The user/bank officers enter the credentials (e.g. api keys) they used to register with the Credit Bureau in the Registration Portal. (4)
+- The service saves the api keys (encrypted) in the database. (5, 6)
+- The bank officer loads the FICO score result on the client page.
+- The service decrypts the api keys, parses a request body with client info, signs the request with the keys and sends it to the external credit bureau. (7, 8, 9, 10, 11, 12, 13)
+- The service retrieves the response from the external credit bureau and parses the information into a generalized FICO score. (14)
+- The user/bank officer views the FICO score on the client page.
+
+## Postman Collection
+1. Setup data in MifosX sandbox to test Credit Bureau APIs: https://documenter.getpostman.com/view/19472254/2sBXigLtC6
+2. Test Credit Bureau APIs: https://documenter.getpostman.com/view/19472254/2sB3QCRskT

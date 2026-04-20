@@ -12,6 +12,7 @@ import org.mifos.creditbureau.service.EncryptionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,20 +20,19 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CreditBureauRegistrationReadImplService implements CreditBureauRegistrationReadService {
 
-    // Inject the JPA repository for CreditBureau entities
     private final CreditBureauRepository creditBureauRepository;
     private final CBRegisterParamRepository cbRegisterParamRepository;
-    // Inject the MapStruct mapper for converting between entities and DTOs
     private final CreditBureauMapper creditBureauMapper;
     private final EncryptionService encryptionService;
 
 
     @Override
-    @Transactional(readOnly = true) // Use a read-only transaction for performance
+    @Transactional(readOnly = true)
     public CBRegisterParamsData getCreditBureauParams(Long creditBureauId) {
         return cbRegisterParamRepository.findById(creditBureauId)
                 .map(creditBureauMapper::toCBRegisterParamsData)
-                .orElse(null);
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Credit bureau params not found for id: " + creditBureauId));
     }
 
     @Override
@@ -40,50 +40,38 @@ public class CreditBureauRegistrationReadImplService implements CreditBureauRegi
     public List<String> getCreditBureauParamKeys(Long creditBureauId) {
         return cbRegisterParamRepository.findById(creditBureauId)
                 .map(params -> new ArrayList<>(params.getRegistrationParams().keySet()))
-                .orElse(null);
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Credit bureau params not found for id: " + creditBureauId));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Map<String, String> getRegistrationParamMap(Long creditBureauId) {
-        Optional<CBRegisterParams> cbParamOptional = cbRegisterParamRepository.findById(creditBureauId);
+        CBRegisterParams cbParams = cbRegisterParamRepository.findById(creditBureauId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Credit bureau params not found for id: " + creditBureauId));
 
-        return cbParamOptional
-                .map(cbParams ->{
-                    Map<String, String> encryptedMap = cbParams.getRegistrationParams();
-                    Map<String, String> decryptedMap = new HashMap<>();
+        Map<String, String> encryptedMap = cbParams.getRegistrationParams();
+        Map<String, String> decryptedMap = new HashMap<>();
 
-                    encryptedMap.forEach((key, value) -> {
-                        try{
-                            String decryptedValue = encryptionService.decrypt(value);
-                            decryptedMap.put(key, decryptedValue);
-                        }catch (Exception e){
-                            throw new RuntimeException("Error decrypting parameter: " + e);
-                        }
-                    });
-                    return decryptedMap;
-                })
-                .orElse(Collections.emptyMap());
-
-//                .map(CBRegisterParams::getRegistrationParams)
-
-
-
+        encryptedMap.forEach((key, value) -> {
+            try {
+                String decryptedValue = encryptionService.decrypt(value);
+                decryptedMap.put(key, decryptedValue);
+            } catch (Exception e) {
+                throw new RuntimeException("Error decrypting parameter: " + e);
+            }
+        });
+        return decryptedMap;
     }
 
     @Override
-    @Transactional(readOnly = true) // Use a read-only transaction for performance
+    @Transactional(readOnly = true)
     public List<CreditBureauData> getAllCreditBureaus() {
-        // Fetch all CreditBureau entities from the database.
         List<CreditBureau> creditBureaus = creditBureauRepository.findAll();
 
-        // Use Java Streams to map each CreditBureau entity to its corresponding DTO.
         return creditBureaus.stream()
                 .map(creditBureauMapper::toCreditBureauData)
                 .collect(Collectors.toList());
     }
-
-
-
-
 }
