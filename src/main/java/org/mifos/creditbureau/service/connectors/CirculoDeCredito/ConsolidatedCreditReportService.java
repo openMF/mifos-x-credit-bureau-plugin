@@ -184,6 +184,7 @@ public class ConsolidatedCreditReportService {
                 .primerNombre(nvl(client.getFirstName()))
                 .apellidoPaterno(nvl(client.getLastName()))
                 .fechaNacimiento(formatDate(client.getDateOfBirth()))
+                .rfc(nvl(client.getRfc()))
                 // Address fields from Fineract
                 .domicilio(CirculoDeCreditoRCCRequest.Domicilio.builder()
                         .direccion(nvl(streetAddress))

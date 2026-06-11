@@ -19,6 +19,28 @@ public class CirculoDeCreditoApiResource {
     @Autowired
     private ConsolidatedCreditReportService consolidatedCreditReportService;
 
+    /**
+     * POST /circulo-de-credito/rcc/{clientId}?creditBureauId={id}
+     *
+     * CB-ILD calls this endpoint for real CDC credit report pulls.
+     * Fetches Fineract client data, builds CDC request with ECDSA signing,
+     * calls CDC production endpoint, maps response.
+     *
+     * Phase 2 — replaces mock mode in CB-ILD CdcScorePullServiceImpl.
+     */
+    @POST
+    @Path("/rcc/{clientId}")
+    public Response callRCC(
+            @PathParam("clientId") Long clientId,
+            @jakarta.ws.rs.QueryParam("creditBureauId") Long creditBureauId)
+            throws Exception {
+        return Response.ok(
+                consolidatedCreditReportService
+                        .getConsolidatedCreditReport(
+                                creditBureauId, clientId))
+                .build();
+    }
+
     @POST
     @Path("/security-test/{creditBureauId}")
     public Response callSecurityTest(@PathParam("creditBureauId") Long creditBureauId) throws Exception{
