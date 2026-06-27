@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3307/creditbureau
+    username: root
+    password: root
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  liquibase:
+    enabled: false
+
+server:
+  port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+mifos:
+  circulodecredito:
+    base:
+      url: https://services.circulodecredito.com.mx/sandbox
+    mock:
+      enabled: false
+  fineract:
+    api:
+      base-url:
+        client: https://mifos-bank-1.mifos.community/fineract-provider/api/v1/clients/
+        address: https://mifos-bank-1.mifos.community/fineract-provider/api/v1/clients/
+      username: mifos
+      password: password
+  security:
+    encryption:
+      key: test-key-32-bytes-long-for-aes-gcm

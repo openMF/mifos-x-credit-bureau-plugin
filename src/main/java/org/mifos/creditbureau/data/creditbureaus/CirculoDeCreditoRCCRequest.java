@@ -10,11 +10,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class CirculoDeCreditoRCCRequest {
-    @Builder.Default String primerNombre = "string";
-    @Builder.Default String apellidoPaterno = "string";
-    @Builder.Default String apellidoMaterno = "string";
-    @Builder.Default String fechaNacimiento = "string";
-    @Builder.Default String rfc = "string";
+    @Builder.Default String primerNombre = "";
+    @Builder.Default String apellidoPaterno = "";
+    @Builder.Default String apellidoMaterno = "NA";
+    @Builder.Default String fechaNacimiento = "";
+    @Builder.Default String rfc = "";
+    @Builder.Default String nacionalidad = "MX";
     @Builder.Default Domicilio domicilio = Domicilio.builder().build();
 
     @Data
@@ -22,11 +23,11 @@ public class CirculoDeCreditoRCCRequest {
     @Getter
     @AllArgsConstructor
     public static class Domicilio {
-        @Builder.Default String direccion = "string";
-        @Builder.Default String colonia = "string";
-        @Builder.Default String municipio = "string";
-        @Builder.Default String ciudad = "string";
-        @Builder.Default String estado = "string";
-        @Builder.Default String codigoPostal = "string";
+        @Builder.Default String direccion = "";
+        @Builder.Default String colonia = "";
+        @Builder.Default String municipio = "";
+        @Builder.Default String ciudad = "";
+        @Builder.Default String estado = "";
+        @Builder.Default String codigoPostal = "";
     }
 }
