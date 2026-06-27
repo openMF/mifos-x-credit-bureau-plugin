@@ -82,22 +82,36 @@ public class CirculoDeCreditoApiResource {
     @POST
     @Path("/security-test/{creditBureauId}")
     public Response callSecurityTest(
-            @PathParam("creditBureauId") Long creditBureauId)
-            throws Exception {
-        return Response.ok(
-                securityTestService.testSecurityEndpoint(creditBureauId))
-                .build();
+            @PathParam("creditBureauId") Long creditBureauId) {
+        try {
+            return Response.ok(
+                    securityTestService.testSecurityEndpoint(creditBureauId))
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage()).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Security test failed").build();
+        }
     }
 
     /*Sandbox connection*/
     @POST
     @Path("/rcc-test/{creditBureauId}")
     public Response callRCCTest(
-            @PathParam("creditBureauId") Long creditBureauId)
-            throws Exception {
-        return Response.ok(
-                consolidatedCreditReportService
-                        .testRCCSandboxEndpoint(creditBureauId).getBody())
-                .build();
+            @PathParam("creditBureauId") Long creditBureauId) {
+        try {
+            return Response.ok(
+                    consolidatedCreditReportService
+                            .testRCCSandboxEndpoint(creditBureauId).getBody())
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage()).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("RCC test failed").build();
+        }
     }
 }

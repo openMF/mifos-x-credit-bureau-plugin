@@ -179,20 +179,16 @@ public class ConsolidatedCreditReportService {
             streetAddress = String.join(" ", addressLines);
         }
 
-        // domicilio required by CDC — always send with defaults if missing
-        // Field names match CDC API spec: coloniaPoblacion, delegacionMunicipio, cp
+        // domicilio required by CDC — always send, use empty strings if data missing
+        // Field names match CDC API spec: colonia, municipio, codigoPostal
         CirculoDeCreditoRCCRequest.Domicilio domicilio =
                 CirculoDeCreditoRCCRequest.Domicilio.builder()
-                        .direccion(streetAddress.isBlank() ? "INSURGENTES SUR 1007" : streetAddress)
-                        .colonia("INSURGENTES SUR")
-                        .municipio(client.getTownVillage() != null
-                                ? client.getTownVillage() : "CIUDAD DE MEXICO")
-                        .ciudad(client.getCity() != null
-                                ? client.getCity() : "CIUDAD DE MEXICO")
-                        .estado(client.getStateProvince() != null
-                                ? client.getStateProvince() : "DF")
-                        .codigoPostal(client.getPostalCode() != null
-                                ? client.getPostalCode() : "11230")
+                        .direccion(nvl(streetAddress))
+                        .colonia("")
+                        .municipio(nvl(client.getTownVillage()))
+                        .ciudad(nvl(client.getCity()))
+                        .estado(nvl(client.getStateProvince()))
+                        .codigoPostal(nvl(client.getPostalCode()))
                         .build();
 
         return CirculoDeCreditoRCCRequest.builder()

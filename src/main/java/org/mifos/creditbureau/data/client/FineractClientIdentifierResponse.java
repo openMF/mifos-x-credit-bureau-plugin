@@ -46,11 +46,13 @@ public class FineractClientIdentifierResponse implements Serializable {
      */
     public boolean isNationalId() {
         if (documentKey == null || documentKey.isBlank()) return false;
-        if (documentType == null) return true;
+        // Unknown type — do not assume RFC, return false to avoid wrong data to CDC
+        if (documentType == null) return false;
         String typeName = documentType.getName() != null
                 ? documentType.getName()
                 : documentType.getValue();
-        if (typeName == null) return true;
+        // Unknown type name — do not assume RFC
+        if (typeName == null) return false;
         return "NATIONAL_ID".equalsIgnoreCase(typeName)
                 || "Any Other Id Type".equalsIgnoreCase(typeName)
                 || "Id".equalsIgnoreCase(typeName);
