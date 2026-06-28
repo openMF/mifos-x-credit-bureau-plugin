@@ -58,7 +58,7 @@ public class ConsolidatedCreditReportService {
         this.responseMapper = responseMapper;
         this.signatureService = signatureService;
         this.restTemplate = restTemplateBuilder
-                .setConnectTimeout(Duration.ofSeconds(10))
+                .setConnectTimeout(Duration.ofSeconds(30))
                 .setReadTimeout(Duration.ofSeconds(30))
                 .build();
         this.objectMapper = new ObjectMapper();
@@ -117,7 +117,7 @@ public class ConsolidatedCreditReportService {
                 new HttpEntity<>(requestBodyJson, headers);
 
         // Step 5 — Send request to CDC production endpoint
-        String url = baseUrl + "v1/rcc";
+        String url = baseUrl + "/v1/rcc";
         log.info("Sending RCC request to CDC for clientId: {}",
                 clientId);
 
@@ -179,20 +179,26 @@ public class ConsolidatedCreditReportService {
             streetAddress = String.join(" ", addressLines);
         }
 
-        return CirculoDeCreditoRCCRequest.builder()
-                // Person fields from Fineract
-                .primerNombre(nvl(client.getFirstName()))
-                .apellidoPaterno(nvl(client.getLastName()))
-                .fechaNacimiento(formatDate(client.getDateOfBirth()))
-                .rfc(nvl(client.getRfc()))
-                // Address fields from Fineract
-                .domicilio(CirculoDeCreditoRCCRequest.Domicilio.builder()
+        // domicilio required by CDC — always send, use empty strings if data missing
+        // Field names match CDC API spec: colonia, municipio, codigoPostal
+        CirculoDeCreditoRCCRequest.Domicilio domicilio =
+                CirculoDeCreditoRCCRequest.Domicilio.builder()
                         .direccion(nvl(streetAddress))
+                        .colonia("")
+                        .municipio(nvl(client.getTownVillage()))
                         .ciudad(nvl(client.getCity()))
                         .estado(nvl(client.getStateProvince()))
                         .codigoPostal(nvl(client.getPostalCode()))
-                        .municipio(nvl(client.getTownVillage()))
-                        .build())
+                        .build();
+
+        return CirculoDeCreditoRCCRequest.builder()
+                .primerNombre(nvl(client.getFirstName()))
+                .apellidoPaterno(nvl(client.getLastName()))
+                .apellidoMaterno("NA")
+                .fechaNacimiento(formatDate(client.getDateOfBirth()))
+                .rfc(nvl(client.getRfc()))
+                .nacionalidad("MX")
+                .domicilio(domicilio)
                 .build();
     }
 
@@ -203,7 +209,7 @@ public class ConsolidatedCreditReportService {
     public ResponseEntity<String> testRCCSandboxEndpoint(
             Long creditBureauId) throws Exception {
 
-        String url = baseUrl + "sandbox/v1/rcc";
+        String url = baseUrl + "/v1/rcc";
 
         // Hardcoded CDC sandbox test data (official CDC test values)
         CirculoDeCreditoRCCRequest request = CirculoDeCreditoRCCRequest
@@ -216,8 +222,8 @@ public class ConsolidatedCreditReportService {
                 .domicilio(CirculoDeCreditoRCCRequest.Domicilio.builder()
                         .direccion("INSURGENTES SUR 1007")
                         .colonia("INSURGENTES SUR")
-                        .municipio("MEXICO CITY")
-                        .ciudad("MEXICO CITY")
+                        .municipio("CIUDAD DE MEXICO")
+                        .ciudad("CIUDAD DE MEXICO")
                         .estado("DF")
                         .codigoPostal("11230")
                         .build())
@@ -266,6 +272,19 @@ public class ConsolidatedCreditReportService {
 
     private String formatDate(Object dateOfBirth) {
         if (dateOfBirth == null) return "";
-        return dateOfBirth.toString();
+        // Fineract returns DOB as List [yyyy, MM, dd]
+        // CDC expects format: yyyy-MM-dd
+        if (dateOfBirth instanceof java.util.List) {
+            java.util.List<?> parts = (java.util.List<?>) dateOfBirth;
+            if (parts.size() >= 3) {
+                int year = ((Number) parts.get(0)).intValue();
+                int month = ((Number) parts.get(1)).intValue();
+                int day = ((Number) parts.get(2)).intValue();
+                return String.format("%04d-%02d-%02d", year, month, day);
+            }
+        }
+        // Fallback: try to parse as string
+        String raw = dateOfBirth.toString();
+        return raw;
     }
 }

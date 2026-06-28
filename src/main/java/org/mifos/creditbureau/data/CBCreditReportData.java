@@ -7,6 +7,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Builder
+@Getter
 public class CBCreditReportData {
     // ==== Report Metadata ====
     @Builder.Default private String reportId = "string";
