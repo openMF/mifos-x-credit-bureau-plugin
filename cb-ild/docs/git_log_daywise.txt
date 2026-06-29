@@ -1,0 +1,22 @@
+2026-06-18 04:06 | 5d26d32 | feat(MX-275): Dispute workflow - create, status update, view
+2026-06-17 00:35 | 85dde5a | feat(MX-274): Retry scheduler for failed CDC submissions
+2026-06-16 13:40 | 68f7943 | feat(MX-273): CDC submission pipeline + AOP bug fix
+2026-06-10 22:51 | e55fce5 | MX-272: Add @ActiveProfiles(test) to CbIldApplicationTests — fixes CI contextLoads without MariaDB Docker
+2026-06-09 23:53 | 0e9baa2 | MX-272: RetentionService + BureauResponseArchive + RetentionArchiveService — LRSIC 72-month archive job. Add preConditions to V1-V5 changesets. CB_ENC_KEY production warning. 103 tests, JaCoCo 80%
+2026-06-09 05:57 | 830a6ce | MX-272: SecurityConfig — Phase 1 permit-all, stateless, CSRF disabled. Fineract URL updated to mifos-bank-1 — 98 tests, JaCoCo 84%
+2026-06-08 17:55 | d4c4d8e | MX-272: BureauReadinessController + 4 tests — GET /api/clients/{id}/bureau-readiness, @PreAuthorize KYC_OFFICER+COMPLIANCE, @Auditable — 98 tests, JaCoCo 84%
+2026-06-08 17:48 | 95fab8c | MX-272: BureauReadinessService + IBureauReadinessService + 8 tests — orchestrates Fineract+KYC+CDC pipeline — 94 tests, JaCoCo 84%
+2026-06-06 01:10 | ad01a81 | MX-272: Fix KycCompletenessScorer — @ConfigurationProperties weights, RFC null = score 0 no exception, KycScoringProperties — 86 tests, JaCoCo 83%
+2026-06-05 00:49 | fe6f4c9 | Fix Redis auto-config in application.properties, add @Order(HIGHEST_PRECEDENCE) to CbildAuditAspect
+2026-06-05 00:42 | 8e2f8b4 | Fix @Auditable missing on pullAndSave, disable Redis auto-config in tests
+2026-06-02 23:37 | 08b4d29 | Fix double logging in CdcNotConfiguredException — remove @Slf4j and constructor log
+2026-06-02 14:30 | 40bdcde | Fix 9 bugs: AuditAspect REQUIRES_NEW self-invocation, EncryptionService charset, archive autoIncrement, GlobalExceptionHandler missing handlers, expiryDate LocalDate, CdcNotConfiguredException, FineractServerException(502), double logging, @ResponseStatus dead code
+2026-06-01 02:59 | d9e6da0 | MX-271: Add GlobalExceptionHandler, 4 CDC exceptions, KycPrerequisiteException, ErrorResponse, CbildAuditAspect, CorrelationIdFilter, logback-spring.xml, V6 audit additions — 66 tests total, JaCoCo 80%
+2026-05-31 01:10 | 48a5d7f | MX-270: Add BureauResponseEntity (15 columns), BureauResponseRepository, ICdcScorePullService, CdcScorePullServiceImpl — first FICO score save to bureau_response, mock mode, score drop detection, SHA-256 hash — 35 tests total, JaCoCo 81%
+2026-05-28 00:26 | bf6e33f | MX-269: Add RestTemplateConfig and FineractApiClient — all 4 Fineract bugs fixed, constructor injection, specific exception handling, null safety, no PII in logs
+2026-05-27 02:26 | 7e86f0d | MX-269: Add FineractNotFoundException, FineractServerException, FineractConnectionException
+2026-05-27 02:14 | 8ac02f4 | MX-269: Add FineractClientData aggregator record with KYC helper methods
+2026-05-27 00:56 | cfbc847 | MX-269: Add FineractIdentifierDTO, FineractAddressDTO, FineractClientResponse — production ready DTOs with null safety
+2026-05-28 12:25 | 889e91e | MX-269: Add FineractApiClientTest (14 tests), FineractExceptionTest (5 tests), EncryptionServiceTest (5 tests) — 25 tests total, JaCoCo 88%, zero warnings
+2026-05-26 01:36 | 9b3d903 | MX-265: Remove hardcoded credentials — use environment variables, add .gitignore for secrets
+2026-05-26 01:18 | cc060e4 | MX-265: Initial project setup — Spring Boot 3.2.6, Java 21, Gradle, Liquibase V1-V5, EncryptionService AES-GCM, WireMock stubs, H2 test profile

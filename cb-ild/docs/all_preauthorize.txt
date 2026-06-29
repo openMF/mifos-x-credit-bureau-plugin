@@ -1,0 +1,12 @@
+src/main/java/org/mifos/creditbureau/cb_ild/config/security/SecurityConfig.java:20: *   @PreAuthorize on BureauReadinessController requires roles.
+src/main/java/org/mifos/creditbureau/cb_ild/config/security/SecurityConfig.java:22: *   anonymousUser has no roles — @PreAuthorize blocks all requests.
+src/main/java/org/mifos/creditbureau/cb_ild/config/security/SecurityConfig.java:28: *   3. @PreAuthorize on controller enforces roles automatically
+src/main/java/org/mifos/creditbureau/cb_ild/controller/BureauReadinessController.java:24: *   @PreAuthorize — only KYC_OFFICER or COMPLIANCE can call this
+src/main/java/org/mifos/creditbureau/cb_ild/controller/BureauReadinessController.java:67:    @PreAuthorize("hasAnyRole('KYC_OFFICER', 'COMPLIANCE')")
+src/main/java/org/mifos/creditbureau/cb_ild/controller/SubmissionController.java:34: *   @PreAuthorize — CREDIT_ANALYST or COMPLIANCE, per the RBAC table in the
+src/main/java/org/mifos/creditbureau/cb_ild/controller/SubmissionController.java:95:    @PreAuthorize("hasAnyRole('CREDIT_ANALYST', 'COMPLIANCE')")
+src/main/java/org/mifos/creditbureau/cb_ild/controller/SubmissionController.java:132:    @PreAuthorize("hasAnyRole('CREDIT_ANALYST', 'COMPLIANCE')")
+src/main/java/org/mifos/creditbureau/cb_ild/controller/DisputeController.java:24: * @PreAuthorize dormant until MX-276 adds @EnableMethodSecurity.
+src/main/java/org/mifos/creditbureau/cb_ild/controller/DisputeController.java:43:    @PreAuthorize("hasAnyRole('KYC_OFFICER', 'CREDIT_ANALYST', 'COMPLIANCE')")
+src/main/java/org/mifos/creditbureau/cb_ild/controller/DisputeController.java:56:    @PreAuthorize("hasAnyRole('KYC_OFFICER', 'CREDIT_ANALYST', 'COMPLIANCE')")
+src/main/java/org/mifos/creditbureau/cb_ild/controller/DisputeController.java:68:    @PreAuthorize("hasAnyRole('KYC_OFFICER', 'CREDIT_ANALYST', 'COMPLIANCE')")

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+  <changeSet id="V1-bureau-response" author="satyam">
+    <preConditions onFail="MARK_RAN">
+      <not><tableExists tableName="bureau_response"/></not>
+    </preConditions>
+    <createTable tableName="bureau_response">
+      <column name="id" type="BIGINT" autoIncrement="true"><constraints primaryKey="true"/></column>
+      <column name="client_id" type="BIGINT"><constraints nullable="false"/></column>
+      <column name="bureau_type" type="VARCHAR(50)"><constraints nullable="false"/></column>
+      <column name="full_response" type="TEXT"/>
+      <column name="fico_score" type="INT"/>
+      <column name="tradelines" type="TEXT"/>
+      <column name="alerts" type="TEXT"/>
+      <column name="pulled_at" type="TIMESTAMP"><constraints nullable="false"/></column>
+      <column name="expiry_date" type="TIMESTAMP"/>
+      <column name="soft_deleted" type="BOOLEAN" defaultValueBoolean="false"/>
+    </createTable>
+    <createIndex tableName="bureau_response" indexName="idx_bureau_response_client_id">
+      <column name="client_id"/>
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="V11-backfill-bureau-response-expiry" author="satyam">
+        <comment>
+            LRSIC compliance backfill — set expiryDate on all bureau_response rows
+            where expiry_date is null.
+
+            Rule: expiryDate = pulled_at + 72 months (LRSIC Article 23).
+            For rows without date_of_first_delinquency, use pulled_at as baseline.
+            This ensures RetentionService can archive all existing rows correctly.
+        </comment>
+        <sql dbms="mariadb,mysql">
+            UPDATE bureau_response
+            SET expiry_date = DATE_ADD(pulled_at, INTERVAL 72 MONTH)
+            WHERE expiry_date IS NULL
+            AND pulled_at IS NOT NULL;
+        </sql>
+        <sql dbms="h2">
+            UPDATE bureau_response
+            SET expiry_date = TIMESTAMPADD(MONTH, 72, pulled_at)
+            WHERE expiry_date IS NULL
+            AND pulled_at IS NOT NULL;
+        </sql>
+        <rollback>
+            <!-- Intentional no-op: expiry_date values must not be destroyed on rollback.
+                 LRSIC requires retention dates to be preserved.
+                 To truly reverse this migration, restore from backup. -->
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

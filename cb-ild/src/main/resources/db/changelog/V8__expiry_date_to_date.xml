@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+  <!--
+    Bug 10 fix: expiry_date was TIMESTAMP, dateOfFirstDelinquency is DATE.
+    Type mismatch caused:
+      1. Compile error: LocalDate.plusMonths() returns LocalDate,
+         not LocalDateTime — cannot assign to LocalDateTime field
+      2. Timezone issue: TIMESTAMP applies server timezone conversion.
+         A date stored as midnight UTC+5:30 reads back as previous day
+         in UTC, violating LRSIC 72-month retention compliance by 1 day.
+    Fix: change expiry_date to DATE — matches dateOfFirstDelinquency type,
+    no timezone conversion, consistent LRSIC calculation.
+  -->
+
+  <changeSet id="V8-expiry-date-to-date" author="satyam">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="bureau_response" columnName="expiry_date"/>
+    </preConditions>
+    <modifyDataType
+      tableName="bureau_response"
+      columnName="expiry_date"
+      newDataType="DATE"/>
+  </changeSet>
+
+</databaseChangeLog>

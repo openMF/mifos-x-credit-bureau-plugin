@@ -1,0 +1,39 @@
+src/main/java/org/mifos/creditbureau/cb_ild/repository/AuditEntryRepository.java:19:@Repository
+src/main/java/org/mifos/creditbureau/cb_ild/repository/BureauResponseArchiveRepository.java:16:@Repository
+src/main/java/org/mifos/creditbureau/cb_ild/repository/SubmissionRecordRepository.java:26:@Repository
+src/main/java/org/mifos/creditbureau/cb_ild/repository/DisputeCaseRepository.java:22:@Repository
+src/main/java/org/mifos/creditbureau/cb_ild/repository/BureauResponseRepository.java:24:@Repository
+src/main/java/org/mifos/creditbureau/cb_ild/config/security/SecurityConfig.java:43:@Configuration
+src/main/java/org/mifos/creditbureau/cb_ild/config/security/SecurityConfig.java:53:    @Bean
+src/main/java/org/mifos/creditbureau/cb_ild/config/RestTemplateConfig.java:33:@Configuration
+src/main/java/org/mifos/creditbureau/cb_ild/config/RestTemplateConfig.java:50:    @Bean("fineractRestTemplate")
+src/main/java/org/mifos/creditbureau/cb_ild/config/RestTemplateConfig.java:67:    @Bean("pluginRestTemplate")
+src/main/java/org/mifos/creditbureau/cb_ild/security/EncryptionService.java:45:@Service
+src/main/java/org/mifos/creditbureau/cb_ild/aop/CbildAuditAspect.java:21: * CRITICAL — audit persistence is in a SEPARATE @Service bean.
+src/main/java/org/mifos/creditbureau/cb_ild/aop/CbildAuditAspect.java:40:@Component
+src/main/java/org/mifos/creditbureau/cb_ild/aop/AuditPersistenceService.java:11: * Separate @Service bean for saving audit entries.
+src/main/java/org/mifos/creditbureau/cb_ild/aop/AuditPersistenceService.java:19: * By extracting saveAuditEntry into this separate @Service,
+src/main/java/org/mifos/creditbureau/cb_ild/aop/AuditPersistenceService.java:29:@Service
+src/main/java/org/mifos/creditbureau/cb_ild/controller/BureauReadinessController.java:44:@RestController
+src/main/java/org/mifos/creditbureau/cb_ild/controller/GlobalExceptionHandler.java:37:@RestControllerAdvice
+src/main/java/org/mifos/creditbureau/cb_ild/controller/SubmissionController.java:58:@RestController
+src/main/java/org/mifos/creditbureau/cb_ild/controller/DisputeController.java:28:@RestController
+src/main/java/org/mifos/creditbureau/cb_ild/filter/CorrelationIdFilter.java:50:@Component
+src/main/java/org/mifos/creditbureau/cb_ild/service/cdc/CdcScorePullServiceImpl.java:42:@Service
+src/main/java/org/mifos/creditbureau/cb_ild/service/kyc/KycCompletenessScorer.java:13: * Weights from @ConfigurationProperties — configurable without code change.
+src/main/java/org/mifos/creditbureau/cb_ild/service/kyc/KycCompletenessScorer.java:36:@Service
+src/main/java/org/mifos/creditbureau/cb_ild/service/kyc/KycScoringProperties.java:10: * Why @ConfigurationProperties:
+src/main/java/org/mifos/creditbureau/cb_ild/service/kyc/KycScoringProperties.java:15:@Component
+src/main/java/org/mifos/creditbureau/cb_ild/service/kyc/KycScoringProperties.java:16:@ConfigurationProperties(prefix = "mifos.kyc.scoring")
+src/main/java/org/mifos/creditbureau/cb_ild/service/retention/RetentionArchiveService.java:12: * Separate @Service bean for archiving one bureau_response row.
+src/main/java/org/mifos/creditbureau/cb_ild/service/retention/RetentionArchiveService.java:33:@Service
+src/main/java/org/mifos/creditbureau/cb_ild/service/retention/RetentionService.java:37:@Service
+src/main/java/org/mifos/creditbureau/cb_ild/service/retention/RetentionService.java:80:                // Separate @Service bean — @Transactional fires correctly
+src/main/java/org/mifos/creditbureau/cb_ild/service/bureau/BureauReadinessService.java:35:@Service
+src/main/java/org/mifos/creditbureau/cb_ild/service/dispute/DisputeServiceImpl.java:43:@Service
+src/main/java/org/mifos/creditbureau/cb_ild/service/submission/SubmissionServiceImpl.java:54:@Service
+src/main/java/org/mifos/creditbureau/cb_ild/service/submission/SubmissionRetryScheduler.java:47:@Component
+src/main/java/org/mifos/creditbureau/cb_ild/service/submission/SubmissionRetryProperties.java:11: * Mirrors KycScoringProperties — @ConfigurationProperties requires both
+src/main/java/org/mifos/creditbureau/cb_ild/service/submission/SubmissionRetryProperties.java:34:@Component
+src/main/java/org/mifos/creditbureau/cb_ild/service/submission/SubmissionRetryProperties.java:35:@ConfigurationProperties(prefix = "cbild.schedule")
+src/main/java/org/mifos/creditbureau/cb_ild/client/FineractApiClient.java:45:@Component

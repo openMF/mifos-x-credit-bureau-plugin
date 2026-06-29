@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+  <changeSet id="V6-audit-entry-additions" author="satyam">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="audit_entry" columnName="duration_ms"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="audit_entry">
+      <column name="duration_ms" type="BIGINT"/>
+      <column name="result" type="VARCHAR(20)"/>
+      <column name="error_message" type="TEXT"/>
+    </addColumn>
+  </changeSet>
+
+</databaseChangeLog>

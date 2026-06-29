@@ -1,0 +1,1 @@
+{"request":{"method":"POST","url":"/v1/cartera/down"},"response":{"status":503,"headers":{"Content-Type":"application/json"},"body":"{\"message\":\"Service unavailable\"}"}}
