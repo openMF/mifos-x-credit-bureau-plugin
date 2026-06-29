@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  mariadb-cb:
+    image: mariadb:10.11
+    container_name: mariadb-cb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cbild_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - cbild_mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  cbild_mariadb_data:

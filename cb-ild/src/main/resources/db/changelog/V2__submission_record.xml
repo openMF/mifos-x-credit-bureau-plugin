@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+  <changeSet id="V2-submission-record" author="satyam">
+    <preConditions onFail="MARK_RAN">
+      <not><tableExists tableName="submission_record"/></not>
+    </preConditions>
+    <createTable tableName="submission_record">
+      <column name="id" type="BIGINT" autoIncrement="true"><constraints primaryKey="true"/></column>
+      <column name="client_id" type="BIGINT"><constraints nullable="false"/></column>
+      <column name="loan_id" type="BIGINT"/>
+      <column name="trigger_type" type="VARCHAR(50)"><constraints nullable="false"/></column>
+      <column name="status" type="VARCHAR(50)"><constraints nullable="false"/></column>
+      <column name="rejection_reason" type="TEXT"/>
+      <column name="retry_count" type="INT" defaultValueNumeric="0"/>
+      <column name="next_retry_at" type="TIMESTAMP"/>
+      <column name="submitted_at" type="TIMESTAMP"/>
+      <column name="updated_at" type="TIMESTAMP"/>
+      <column name="soft_deleted" type="BOOLEAN" defaultValueBoolean="false"/>
+    </createTable>
+    <createIndex tableName="submission_record" indexName="idx_submission_status">
+      <column name="status"/>
+    </createIndex>
+    <createIndex tableName="submission_record" indexName="idx_submission_client_id">
+      <column name="client_id"/>
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>

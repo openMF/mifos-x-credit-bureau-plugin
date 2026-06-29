@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+  <include file="db/changelog/V1__bureau_response.xml"/>
+  <include file="db/changelog/V1b__bureau_response_additions.xml"/>
+  <include file="db/changelog/V2__submission_record.xml"/>
+  <include file="db/changelog/V3__dispute_case.xml"/>
+  <include file="db/changelog/V4__audit_entry.xml"/>
+  <include file="db/changelog/V5__archive_tables.xml"/>
+  <include file="db/changelog/V6__audit_entry_additions.xml"/>
+  <include file="db/changelog/V7__archive_tables_autoincrement.xml"/>
+  <include file="db/changelog/V8__expiry_date_to_date.xml"/>
+  <include file="db/changelog/V9__submission_record_additions.xml"/>
+  <include file="db/changelog/V9b__dispute_case_additions.xml"/>
+  <include file="db/changelog/V10__audit_entry_client_id.xml"/>
+    <include file="db/changelog/V11__backfill_bureau_response_expiry.xml"/>
+
+</databaseChangeLog>

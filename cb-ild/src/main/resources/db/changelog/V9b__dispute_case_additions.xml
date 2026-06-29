@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+  <changeSet id="V9-dispute-case-additions" author="satyam">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="dispute_case" columnName="raised_by"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="dispute_case">
+      <column name="raised_by" type="VARCHAR(255)" defaultValue="system">
+        <constraints nullable="false"/>
+      </column>
+      <column name="resolution_notes" type="TEXT"/>
+      <column name="expiry_date" type="DATE"/>
+    </addColumn>
+
+    <addNotNullConstraint tableName="dispute_case" columnName="opened_at"
+      columnDataType="TIMESTAMP" defaultNullValue="CURRENT_TIMESTAMP"/>
+
+    <createIndex tableName="dispute_case" indexName="idx_dispute_submission_record_id">
+      <column name="submission_record_id"/>
+    </createIndex>
+  </changeSet>
+
+</databaseChangeLog>
