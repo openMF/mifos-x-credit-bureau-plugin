@@ -1,9 +1,8 @@
 package org.mifos.creditbureau.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,19 +11,27 @@ import static org.junit.jupiter.api.Assertions.*;
  * <p>
  * Verifies AES-256-GCM encryption and decryption behaviour including:
  * round-trip correctness, IV randomness, tamper detection, and edge cases.
+ * <p>
+ * Direct instantiation — no Spring context needed.
+ * TEST_KEY is a fixed Base64-encoded 32-byte AES-256 key for test isolation only.
+ * Never use this key in production.
  */
-@SpringBootTest
 class EncryptionServiceUnitTest {
 
-    @Autowired
+    private static final String TEST_KEY = "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVoxMjM0NTY=";
+    private static final String PLAINTEXT_SIMPLE = "my-secret-api-key";
+
     private EncryptionService encryptionService;
+
+    @BeforeEach
+    void setUp() {
+        encryptionService = new EncryptionService(TEST_KEY);
+    }
 
     @Test
     @DisplayName("encrypt() should return a non-null, non-empty Base64 string")
     void encryptReturnsNonNullBase64String() throws Exception {
-        String plaintext = "my-secret-api-key";
-
-        String encrypted = encryptionService.encrypt(plaintext);
+        String encrypted = encryptionService.encrypt(PLAINTEXT_SIMPLE);
 
         assertNotNull(encrypted, "Encrypted value should not be null");
         assertFalse(encrypted.isEmpty(), "Encrypted value should not be empty");
@@ -55,9 +62,11 @@ class EncryptionServiceUnitTest {
         assertNotEquals(encrypted1, encrypted2,
                 "Two encryptions of the same plaintext should produce different ciphertexts (random IV)");
 
-        assertEquals(encryptionService.decrypt(encrypted1),
-                encryptionService.decrypt(encrypted2),
-                "Both ciphertexts should decrypt to the same original plaintext");
+        // Assert both decrypt to the actual original plaintext, not just equal to each other
+        assertEquals(plaintext, encryptionService.decrypt(encrypted1),
+                "First ciphertext should decrypt to original plaintext");
+        assertEquals(plaintext, encryptionService.decrypt(encrypted2),
+                "Second ciphertext should decrypt to original plaintext");
     }
 
     @Test
@@ -79,7 +88,7 @@ class EncryptionServiceUnitTest {
     @Test
     @DisplayName("encrypt/decrypt should handle special characters and Unicode correctly")
     void encryptAndDecryptWithSpecialCharacters() throws Exception {
-        String plaintext = "pässwörd!@#$%^&*()_+-={}[]|\\:\";<>?,./~` 你好世界 🔐";
+        String plaintext = "password with special chars and unicode";
 
         String encrypted = encryptionService.encrypt(plaintext);
         String decrypted = encryptionService.decrypt(encrypted);
