@@ -28,7 +28,7 @@ dependencies {
     // Data + DB
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.liquibase:liquibase-core'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.3'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.5.9'
 
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
