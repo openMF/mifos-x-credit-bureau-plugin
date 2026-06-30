@@ -1,0 +1,1 @@
+{"request":{"method":"POST","url":"/v1/cartera"},"response":{"status":201,"headers":{"Content-Type":"application/json"},"body":"{\"status\":\"ACCEPTED\",\"submissionId\":\"CDC-2026-001\"}"}}

@@ -1,0 +1,247 @@
+
+=== 2026-06-18 | feat(MX-275): Dispute workflow - create, status update, view ===
+ .../cb_ild/controller/DisputeController.java       |  86 +++++++
+ .../cb_ild/controller/GlobalExceptionHandler.java  |  29 +++
+ .../cb_ild/service/dispute/DisputeServiceImpl.java | 232 +++++++++++++++++
+ .../cb_ild/service/dispute/IDisputeService.java    |  48 ++++
+ .../service/dispute/DisputeServiceImplTest.java    | 274 +++++++++++++++++++++
+ 5 files changed, 669 insertions(+)
+
+
+=== 2026-06-17 | feat(MX-274): Retry scheduler for failed CDC submissions ===
+ .../submission/SubmissionRetryScheduler.java       | 117 ++++++++++++++
+ .../submission/SubmissionRetrySchedulerTest.java   | 180 +++++++++++++++++++++
+ 2 files changed, 297 insertions(+)
+
+
+=== 2026-06-16 | feat(MX-273): CDC submission pipeline + AOP bug fix ===
+ .../creditbureau/cb_ild/CbIldApplication.java      |   2 +
+ .../creditbureau/cb_ild/aop/CbildAuditAspect.java  |   9 +-
+ .../cb_ild/client/FineractApiClient.java           | 158 ++++++++
+ .../cb_ild/client/FineractClientListResponse.java  |  52 +++
+ .../cb_ild/controller/SubmissionController.java    | 157 ++++++++
+ .../creditbureau/cb_ild/entity/DisputeCase.java    | 114 ++++++
+ .../cb_ild/entity/SubmissionRecord.java            | 122 +++++++
+ .../cb_ild/entity/enums/DisputeStatus.java         |  24 ++
+ .../cb_ild/entity/enums/SubmissionStatus.java      |  25 ++
+ .../cb_ild/entity/enums/TriggerType.java           |  15 +
+ .../cb_ild/repository/DisputeCaseRepository.java   |  42 +++
+ .../repository/SubmissionRecordRepository.java     |  72 ++++
+ .../service/submission/BatchSubmissionAck.java     |  23 ++
+ .../service/submission/ISubmissionService.java     | 119 ++++++
+ .../submission/SubmissionRecordResponse.java       |  80 ++++
+ .../submission/SubmissionRetryProperties.java      |  56 +++
+ .../service/submission/SubmissionServiceImpl.java  | 406 +++++++++++++++++++++
+ src/main/resources/application.properties          |   5 +
+ .../db/changelog/V9__dispute_case_additions.xml    |  30 ++
+ .../changelog/V9__submission_record_additions.xml  |  53 +++
+ .../resources/db/changelog/db.changelog-master.xml |   2 +
+ .../cb_ild/aop/CbildAuditAspectTest.java           | 124 +++++--
+ .../cb_ild/entity/SubmissionRecordTest.java        | 140 +++++++
+ .../service/submission/SubmissionServiceTest.java  | 292 +++++++++++++++
+ 24 files changed, 2094 insertions(+), 28 deletions(-)
+
+
+=== 2026-06-10 | MX-272: Add @ActiveProfiles(test) to CbIldApplicationTests — fixes CI contextLoads without MariaDB Docker ===
+ src/test/java/org/mifos/creditbureau/cb_ild/CbIldApplicationTests.java | 2 ++
+ 1 file changed, 2 insertions(+)
+
+
+=== 2026-06-09 | MX-272: RetentionService + BureauResponseArchive + RetentionArchiveService — LRSIC 72-month archive job. Add preConditions to V1-V5 changesets. CB_ENC_KEY production warning. 103 tests, JaCoCo 80% ===
+ .../cb_ild/entity/BureauResponseArchive.java       |  54 ++++++++
+ .../BureauResponseArchiveRepository.java           |  19 +++
+ .../repository/BureauResponseRepository.java       |  13 ++
+ .../service/retention/IRetentionService.java       |  22 ++++
+ .../service/retention/RetentionArchiveService.java |  86 +++++++++++++
+ .../cb_ild/service/retention/RetentionService.java |  95 ++++++++++++++
+ src/main/resources/application.properties          |   3 +
+ .../resources/db/changelog/V1__bureau_response.xml |   3 +
+ .../db/changelog/V2__submission_record.xml         |   3 +
+ .../resources/db/changelog/V3__dispute_case.xml    |   3 +
+ .../resources/db/changelog/V4__audit_entry.xml     |   3 +
+ .../resources/db/changelog/V5__archive_tables.xml  |   3 +
+ .../service/retention/RetentionServiceTest.java    | 143 +++++++++++++++++++++
+ 13 files changed, 450 insertions(+)
+
+
+=== 2026-06-09 | MX-272: SecurityConfig — Phase 1 permit-all, stateless, CSRF disabled. Fineract URL updated to mifos-bank-1 — 98 tests, JaCoCo 84% ===
+ .../cb_ild/config/security/SecurityConfig.java     | 73 ++++++++++++++++++++++
+ src/main/resources/application.properties          |  3 +-
+ 2 files changed, 75 insertions(+), 1 deletion(-)
+
+
+=== 2026-06-08 | MX-272: BureauReadinessController + 4 tests — GET /api/clients/{id}/bureau-readiness, @PreAuthorize KYC_OFFICER+COMPLIANCE, @Auditable — 98 tests, JaCoCo 84% ===
+ .../controller/BureauReadinessController.java      |  79 +++++++++++++++
+ .../controller/BureauReadinessControllerTest.java  | 107 +++++++++++++++++++++
+ 2 files changed, 186 insertions(+)
+
+
+=== 2026-06-08 | MX-272: BureauReadinessService + IBureauReadinessService + 8 tests — orchestrates Fineract+KYC+CDC pipeline — 94 tests, JaCoCo 84% ===
+ .../service/bureau/BureauReadinessService.java     | 101 ++++++++++
+ .../service/bureau/IBureauReadinessService.java    |  19 ++
+ .../service/bureau/BureauReadinessServiceTest.java | 218 +++++++++++++++++++++
+ 3 files changed, 338 insertions(+)
+
+
+=== 2026-06-06 | MX-272: Fix KycCompletenessScorer — @ConfigurationProperties weights, RFC null = score 0 no exception, KycScoringProperties — 86 tests, JaCoCo 83% ===
+ .../cb_ild/service/kyc/IKycScoringService.java     |  10 +
+ .../cb_ild/service/kyc/KycCompletenessScorer.java  | 117 +++++++++++
+ .../cb_ild/service/kyc/KycReadinessResult.java     |  28 +++
+ .../cb_ild/service/kyc/KycScoringProperties.java   |  42 ++++
+ src/main/resources/application.properties          |   9 +
+ .../service/kyc/KycCompletenessScorerTest.java     | 217 +++++++++++++++++++++
+ src/test/resources/application-test.properties     |   9 +
+ 7 files changed, 432 insertions(+)
+
+
+=== 2026-06-05 | Fix Redis auto-config in application.properties, add @Order(HIGHEST_PRECEDENCE) to CbildAuditAspect ===
+ src/main/java/org/mifos/creditbureau/cb_ild/aop/CbildAuditAspect.java | 3 +++
+ src/main/resources/application.properties                             | 4 ++++
+ 2 files changed, 7 insertions(+)
+
+
+=== 2026-06-05 | Fix @Auditable missing on pullAndSave, disable Redis auto-config in tests ===
+ .../creditbureau/cb_ild/service/cdc/CdcScorePullServiceImpl.java      | 2 ++
+ src/test/resources/application-test.properties                        | 4 ++++
+ 2 files changed, 6 insertions(+)
+
+
+=== 2026-06-02 | Fix double logging in CdcNotConfiguredException — remove @Slf4j and constructor log ===
+ .../creditbureau/cb_ild/exception/CdcNotConfiguredException.java      | 4 ----
+ 1 file changed, 4 deletions(-)
+
+
+=== 2026-06-02 | Fix 9 bugs: AuditAspect REQUIRES_NEW self-invocation, EncryptionService charset, archive autoIncrement, GlobalExceptionHandler missing handlers, expiryDate LocalDate, CdcNotConfiguredException, FineractServerException(502), double logging, @ResponseStatus dead code ===
+ .../cb_ild/aop/AuditPersistenceService.java        |  74 +++++++++++++
+ .../creditbureau/cb_ild/aop/CbildAuditAspect.java  |  64 +++--------
+ .../cb_ild/client/FineractApiClient.java           |   3 +-
+ .../cb_ild/controller/GlobalExceptionHandler.java  |  49 +++++++++
+ .../cb_ild/entity/BureauResponseEntity.java        |   4 +-
+ .../cb_ild/exception/CdcBadRequestException.java   |   7 --
+ .../exception/CdcNotConfiguredException.java       |  28 +++++
+ .../cb_ild/exception/CdcServerException.java       |   7 --
+ .../cb_ild/exception/CdcTimeoutException.java      |   6 -
+ .../cb_ild/exception/KycPrerequisiteException.java |   7 --
+ .../cb_ild/security/EncryptionService.java         | 103 ++++++++++++++++--
+ .../service/cdc/CdcScorePullServiceImpl.java       |   4 +-
+ .../changelog/V7__archive_tables_autoincrement.xml |  37 +++++++
+ .../db/changelog/V8__expiry_date_to_date.xml       |  29 +++++
+ .../resources/db/changelog/db.changelog-master.xml |   2 +
+ .../cb_ild/aop/AuditPersistenceServiceTest.java    | 121 +++++++++++++++++++++
+ .../cb_ild/aop/CbildAuditAspectTest.java           |  70 ++++++------
+ .../controller/GlobalExceptionHandlerTest.java     |  33 +++++-
+ .../cb_ild/entity/BureauResponseEntityTest.java    |   2 +-
+ .../cb_ild/exception/CdcExceptionTest.java         |  21 ----
+ .../cb_ild/security/EncryptionServiceTest.java     |  12 +-
+ 21 files changed, 539 insertions(+), 144 deletions(-)
+
+
+=== 2026-06-01 | MX-271: Add GlobalExceptionHandler, 4 CDC exceptions, KycPrerequisiteException, ErrorResponse, CbildAuditAspect, CorrelationIdFilter, logback-spring.xml, V6 audit additions — 66 tests total, JaCoCo 80% ===
+ build.gradle                                       |   1 +
+ .../mifos/creditbureau/cb_ild/aop/Auditable.java   |  44 ++++++
+ .../creditbureau/cb_ild/aop/CbildAuditAspect.java  | 153 +++++++++++++++++++++
+ .../cb_ild/controller/ErrorResponse.java           |  38 +++++
+ .../cb_ild/controller/GlobalExceptionHandler.java  | 131 ++++++++++++++++++
+ .../creditbureau/cb_ild/entity/AuditEntry.java     |  85 ++++++++++++
+ .../cb_ild/exception/CdcBadRequestException.java   |  47 +++++++
+ .../cb_ild/exception/CdcServerException.java       |  41 ++++++
+ .../cb_ild/exception/CdcTimeoutException.java      |  36 +++++
+ .../cb_ild/exception/KycPrerequisiteException.java |  49 +++++++
+ .../cb_ild/filter/CorrelationIdFilter.java         | 113 +++++++++++++++
+ .../cb_ild/repository/AuditEntryRepository.java    |  35 +++++
+ .../db/changelog/V6__audit_entry_additions.xml     |  20 +++
+ .../resources/db/changelog/db.changelog-master.xml |   1 +
+ src/main/resources/logback-spring.xml              |  46 +++++++
+ .../cb_ild/aop/CbildAuditAspectTest.java           | 135 ++++++++++++++++++
+ .../controller/GlobalExceptionHandlerTest.java     | 148 ++++++++++++++++++++
+ .../creditbureau/cb_ild/entity/AuditEntryTest.java |  88 ++++++++++++
+ .../cb_ild/exception/CdcExceptionTest.java         | 147 ++++++++++++++++++++
+ .../cb_ild/filter/CorrelationIdFilterTest.java     | 115 ++++++++++++++++
+ 20 files changed, 1473 insertions(+)
+
+
+=== 2026-05-31 | MX-270: Add BureauResponseEntity (15 columns), BureauResponseRepository, ICdcScorePullService, CdcScorePullServiceImpl — first FICO score save to bureau_response, mock mode, score drop detection, SHA-256 hash — 35 tests total, JaCoCo 81% ===
+ .../cb_ild/entity/BureauResponseEntity.java        | 121 ++++++++++++++
+ .../repository/BureauResponseRepository.java       |  46 ++++++
+ .../service/cdc/CdcScorePullServiceImpl.java       | 175 +++++++++++++++++++++
+ .../cb_ild/service/cdc/ICdcScorePullService.java   |  40 +++++
+ .../cb_ild/entity/BureauResponseEntityTest.java    | 102 ++++++++++++
+ .../service/cdc/CdcScorePullServiceTest.java       | 143 +++++++++++++++++
+ 6 files changed, 627 insertions(+)
+
+
+=== 2026-05-28 | MX-269: Add RestTemplateConfig and FineractApiClient — all 4 Fineract bugs fixed, constructor injection, specific exception handling, null safety, no PII in logs ===
+ .../cb_ild/client/FineractApiClient.java           | 316 +++++++++++++++++++++
+ .../cb_ild/config/RestTemplateConfig.java          |  75 +++++
+ 2 files changed, 391 insertions(+)
+
+
+=== 2026-05-27 | MX-269: Add FineractNotFoundException, FineractServerException, FineractConnectionException ===
+ .../exception/FineractConnectionException.java     | 20 ++++++++++++++++
+ .../exception/FineractNotFoundException.java       | 27 ++++++++++++++++++++++
+ .../cb_ild/exception/FineractServerException.java  | 26 +++++++++++++++++++++
+ 3 files changed, 73 insertions(+)
+
+
+=== 2026-05-27 | MX-269: Add FineractClientData aggregator record with KYC helper methods ===
+ .../cb_ild/client/FineractClientData.java          | 94 ++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
+
+
+=== 2026-05-27 | MX-269: Add FineractIdentifierDTO, FineractAddressDTO, FineractClientResponse — production ready DTOs with null safety ===
+ .../creditbureau/cb_ild/CbIldApplication.java      |  8 ++--
+ .../cb_ild/client/FineractAddressDTO.java          | 43 +++++++++++++++++++
+ .../cb_ild/client/FineractClientResponse.java      | 35 ++++++++++++++++
+ .../cb_ild/client/FineractIdentifierDTO.java       | 49 ++++++++++++++++++++++
+ src/main/resources/application.properties          |  1 +
+ .../changelog/V1b__bureau_response_additions.xml   | 22 ++++++++++
+ .../resources/db/changelog/db.changelog-master.xml |  1 +
+ src/test/resources/application-test.properties     | 18 +++++++-
+ .../wiremock/{ => mappings}/cdc-server-down.json   |  0
+ .../{ => mappings}/credit-check-no-rfc.json        |  0
+ .../{ => mappings}/credit-check-success.json       |  0
+ .../{ => mappings}/submission-accepted.json        |  0
+ .../{ => mappings}/submission-rejected.json        |  0
+ 13 files changed, 173 insertions(+), 4 deletions(-)
+
+
+=== 2026-05-28 | MX-269: Add FineractApiClientTest (14 tests), FineractExceptionTest (5 tests), EncryptionServiceTest (5 tests) — 25 tests total, JaCoCo 88%, zero warnings ===
+ .../cb_ild/client/FineractApiClientTest.java       | 421 +++++++++++++++++++++
+ .../cb_ild/exception/FineractExceptionTest.java    |  69 ++++
+ .../cb_ild/security/EncryptionServiceTest.java     |  82 ++++
+ 3 files changed, 572 insertions(+)
+
+
+=== 2026-05-26 | MX-265: Remove hardcoded credentials — use environment variables, add .gitignore for secrets ===
+ .env.example                              |  4 ++++
+ .gitignore                                |  8 ++++++++
+ src/main/resources/application.properties | 28 +++++++++++++++++++++-------
+ 3 files changed, 33 insertions(+), 7 deletions(-)
+
+
+=== 2026-05-26 | MX-265: Initial project setup — Spring Boot 3.2.6, Java 21, Gradle, Liquibase V1-V5, EncryptionService AES-GCM, WireMock stubs, H2 test profile ===
+ .gitattributes                                     |   3 +
+ .gitignore                                         |  37 +++
+ build.gradle                                       |  94 ++++++++
+ gradle/wrapper/gradle-wrapper.jar                  | Bin 0 -> 48966 bytes
+ gradle/wrapper/gradle-wrapper.properties           |   7 +
+ gradlew                                            | 248 +++++++++++++++++++++
+ gradlew.bat                                        |  93 ++++++++
+ settings.gradle                                    |   1 +
+ .../creditbureau/cb_ild/CbIldApplication.java      |  13 ++
+ .../cb_ild/security/EncryptionService.java         |  61 +++++
+ src/main/resources/application.properties          |  16 ++
+ .../resources/db/changelog/V1__bureau_response.xml |  23 ++
+ .../db/changelog/V2__submission_record.xml         |  27 +++
+ .../resources/db/changelog/V3__dispute_case.xml    |  19 ++
+ .../resources/db/changelog/V4__audit_entry.xml     |  22 ++
+ .../resources/db/changelog/V5__archive_tables.xml  |  23 ++
+ .../resources/db/changelog/db.changelog-master.xml |  12 +
+ .../creditbureau/cb_ild/CbIldApplicationTests.java |  13 ++
+ src/test/resources/application-test.properties     |   9 +
+ src/test/resources/wiremock/cdc-server-down.json   |   1 +
+ .../resources/wiremock/credit-check-no-rfc.json    |   1 +
+ .../resources/wiremock/credit-check-success.json   |   1 +
+ .../resources/wiremock/submission-accepted.json    |   1 +
+ .../resources/wiremock/submission-rejected.json    |   1 +
+ 24 files changed, 726 insertions(+)

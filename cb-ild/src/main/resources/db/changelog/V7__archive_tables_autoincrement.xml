@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+  <!--
+    Bug 11 fix: archive tables were missing autoIncrement on id column.
+    MariaDB throws "Field 'id' doesn't have a default value" on insert
+    without explicit id.
+
+    Note: archive tables preserve original id from source table for
+    traceability. RetentionService always copies id explicitly.
+    autoIncrement added as safety net for future inserts.
+  -->
+
+  <changeSet id="V7-bureau-response-archive-autoincrement" author="satyam">
+    <preConditions onFail="MARK_RAN">
+      <tableExists tableName="bureau_response_archive"/>
+    </preConditions>
+    <modifyDataType
+      tableName="bureau_response_archive"
+      columnName="id"
+      newDataType="BIGINT AUTO_INCREMENT"/>
+  </changeSet>
+
+  <changeSet id="V7-submission-record-archive-autoincrement" author="satyam">
+    <preConditions onFail="MARK_RAN">
+      <tableExists tableName="submission_record_archive"/>
+    </preConditions>
+    <modifyDataType
+      tableName="submission_record_archive"
+      columnName="id"
+      newDataType="BIGINT AUTO_INCREMENT"/>
+  </changeSet>
+
+</databaseChangeLog>

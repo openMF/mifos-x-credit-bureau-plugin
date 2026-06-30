@@ -1,0 +1,1 @@
+{"request":{"method":"POST","url":"/v1/cartera/rejected"},"response":{"status":422,"headers":{"Content-Type":"application/json"},"body":"{\"status\":\"REJECTED\",\"failureReason\":\"Duplicate RFC\"}"}}

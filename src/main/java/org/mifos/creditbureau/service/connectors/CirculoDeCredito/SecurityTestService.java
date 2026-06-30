@@ -35,7 +35,7 @@ public class SecurityTestService {
         this.signatureService = signatureService;
         // FIX: Added timeouts — no longer hangs forever
         this.restTemplate = restTemplateBuilder
-                .setConnectTimeout(Duration.ofSeconds(10))
+                .setConnectTimeout(Duration.ofSeconds(30))
                 .setReadTimeout(Duration.ofSeconds(30))
                 .build();
     }

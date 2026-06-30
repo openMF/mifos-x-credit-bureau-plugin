@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+  <changeSet id="V1b-bureau-response-additions" author="satyam">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="bureau_response" columnName="risk_band"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="bureau_response">
+      <column name="risk_band" type="VARCHAR(20)"/>
+      <column name="has_delinquencies" type="BOOLEAN" defaultValueBoolean="false"/>
+      <column name="date_of_first_delinquency" type="DATE"/>
+      <column name="raw_response_hash" type="VARCHAR(64)"/>
+      <column name="score_drop_alert" type="BOOLEAN" defaultValueBoolean="false"/>
+    </addColumn>
+  </changeSet>
+
+</databaseChangeLog>

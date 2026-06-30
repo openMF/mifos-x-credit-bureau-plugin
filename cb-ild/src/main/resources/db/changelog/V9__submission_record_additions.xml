@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+  <changeSet id="V9-submission-record-additions" author="satyam">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="submission_record" columnName="created_at"/>
+      </not>
+    </preConditions>
+
+    <addColumn tableName="submission_record">
+      <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="cdc_reference_id" type="VARCHAR(255)"/>
+      <column name="inquiry_type" type="VARCHAR(20)"/>
+      <column name="expiry_date" type="DATE"/>
+    </addColumn>
+
+    <createIndex tableName="submission_record" indexName="idx_submission_expiry_date">
+      <column name="expiry_date"/>
+    </createIndex>
+  </changeSet>
+
+
+  <changeSet id="V9-submission-record-retry-index" author="satyam">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <indexExists tableName="submission_record" indexName="idx_submission_retry"/>
+      </not>
+    </preConditions>
+
+    <!--
+      Composite index for SubmissionRetryScheduler (MX-274).
+      findByStatusAndNextRetryAtBefore(status, cutoff, pageable) filters on
+      both columns together every 6 hours. The existing idx_submission_status
+      (single-column, from V2) only narrows by status; this composite index
+      lets MariaDB satisfy both filters in one index lookup as the table grows.
+
+      Column order matters: status first (low-cardinality filter, typically
+      narrows to a small PENDING_RETRY subset), next_retry_at second (range
+      filter <= now() within that subset).
+    -->
+    <createIndex tableName="submission_record" indexName="idx_submission_retry">
+      <column name="status"/>
+      <column name="next_retry_at"/>
+    </createIndex>
+  </changeSet>
+
+</databaseChangeLog>

@@ -2,7 +2,7 @@ import org.gradle.kotlin.dsl.testImplementation
 
 plugins {
 	java
-	id("org.springframework.boot") version "3.5.13"
+	id("org.springframework.boot") version "3.5.16"
 	id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -45,7 +45,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 
 	//Hex
-	implementation("commons-codec:commons-codec:1.21.0")
+	implementation("commons-codec:commons-codec:1.22.0")
 
 	// Jakarta REST / Jersey (JAX-RS)
 	implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0")
@@ -59,7 +59,7 @@ dependencies {
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 
 	// Cryptography
-	implementation("org.bouncycastle:bcprov-jdk18on:1.83")
+	implementation("org.bouncycastle:bcprov-jdk18on:1.84")
 
 	// Lombok
 	compileOnly("org.projectlombok:lombok")

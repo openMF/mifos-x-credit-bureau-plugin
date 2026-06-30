@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <!--
+    CB-ILD Logback configuration.
+    Includes requestId and userId from MDC in every log line.
+    Set by CorrelationIdFilter — every request is traceable.
+
+    Pattern fields:
+      %X{requestId:-no-req} — correlation ID or "no-req" if outside request
+      %X{userId:-anon}      — authenticated user or "anon"
+  -->
+
+  <springProfile name="default,dev">
+    <appender name="CONSOLE"
+        class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+        <pattern>%d{HH:mm:ss.SSS} [%X{requestId:-no-req}] [%X{userId:-anon}] %highlight(%-5level) %cyan(%logger{36}) — %msg%n</pattern>
+      </encoder>
+    </appender>
+    <root level="INFO">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+    <!-- Reduce framework noise -->
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.springframework.security" level="WARN"/>
+    <logger name="liquibase" level="WARN"/>
+    <logger name="com.zaxxer.hikari" level="WARN"/>
+    <!-- CB-ILD at DEBUG for development -->
+    <logger name="org.mifos.creditbureau" level="DEBUG"/>
+  </springProfile>
+
+  <springProfile name="test">
+    <appender name="CONSOLE"
+        class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+        <pattern>%d{HH:mm:ss.SSS} [%X{requestId:-no-req}] %-5level %logger{36} — %msg%n</pattern>
+      </encoder>
+    </appender>
+    <root level="INFO">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+    <logger name="org.mifos.creditbureau" level="DEBUG"/>
+  </springProfile>
+
+</configuration>

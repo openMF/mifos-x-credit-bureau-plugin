@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+  <changeSet id="V3-dispute-case" author="satyam">
+    <preConditions onFail="MARK_RAN">
+      <not><tableExists tableName="dispute_case"/></not>
+    </preConditions>
+    <createTable tableName="dispute_case">
+      <column name="id" type="BIGINT" autoIncrement="true"><constraints primaryKey="true"/></column>
+      <column name="submission_record_id" type="BIGINT"><constraints nullable="false"/></column>
+      <column name="status" type="VARCHAR(50)"><constraints nullable="false"/></column>
+      <column name="dispute_details" type="TEXT"/>
+      <column name="institution_data" type="TEXT"/>
+      <column name="cdc_data" type="TEXT"/>
+      <column name="opened_at" type="TIMESTAMP"/>
+      <column name="resolved_at" type="TIMESTAMP"/>
+      <column name="soft_deleted" type="BOOLEAN" defaultValueBoolean="false"/>
+    </createTable>
+  </changeSet>
+</databaseChangeLog>

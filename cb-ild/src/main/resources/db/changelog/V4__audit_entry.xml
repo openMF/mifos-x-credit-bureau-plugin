@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+  <changeSet id="V4-audit-entry" author="satyam">
+    <preConditions onFail="MARK_RAN">
+      <not><tableExists tableName="audit_entry"/></not>
+    </preConditions>
+    <createTable tableName="audit_entry">
+      <column name="id" type="BIGINT" autoIncrement="true"><constraints primaryKey="true"/></column>
+      <column name="action" type="VARCHAR(100)"><constraints nullable="false"/></column>
+      <column name="record_id" type="BIGINT"/>
+      <column name="entity_type" type="VARCHAR(50)"/>
+      <column name="old_value" type="TEXT"/>
+      <column name="new_value" type="TEXT"/>
+      <column name="performed_by" type="VARCHAR(100)"/>
+      <column name="request_id" type="VARCHAR(100)"/>
+      <column name="created_at" type="TIMESTAMP"><constraints nullable="false"/></column>
+    </createTable>
+    <createIndex tableName="audit_entry" indexName="idx_audit_entry_record_id">
+      <column name="record_id"/>
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>

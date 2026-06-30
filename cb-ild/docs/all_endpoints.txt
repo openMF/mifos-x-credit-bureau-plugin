@@ -1,0 +1,9 @@
+src/main/java/org/mifos/creditbureau/cb_ild/controller/BureauReadinessController.java:45:@RequestMapping("/api/clients")
+src/main/java/org/mifos/creditbureau/cb_ild/controller/BureauReadinessController.java:66:    @GetMapping("/{id}/bureau-readiness")
+src/main/java/org/mifos/creditbureau/cb_ild/controller/SubmissionController.java:59:@RequestMapping("/api/submissions")
+src/main/java/org/mifos/creditbureau/cb_ild/controller/SubmissionController.java:94:    @PostMapping("/run")
+src/main/java/org/mifos/creditbureau/cb_ild/controller/SubmissionController.java:131:    @GetMapping("/history")
+src/main/java/org/mifos/creditbureau/cb_ild/controller/DisputeController.java:29:@RequestMapping("/api/disputes")
+src/main/java/org/mifos/creditbureau/cb_ild/controller/DisputeController.java:42:    @PostMapping
+src/main/java/org/mifos/creditbureau/cb_ild/controller/DisputeController.java:55:    @PutMapping("/{id}/status")
+src/main/java/org/mifos/creditbureau/cb_ild/controller/DisputeController.java:67:    @GetMapping("/{id}")
