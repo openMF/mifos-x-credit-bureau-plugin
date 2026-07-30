@@ -53,6 +53,7 @@ dependencies {
 	// Database & ORM
 	implementation("org.liquibase:liquibase-core")
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+	runtimeOnly("org.postgresql:postgresql")
 
 	// Mapping / Code Generation
 	implementation("org.mapstruct:mapstruct:1.6.3")
