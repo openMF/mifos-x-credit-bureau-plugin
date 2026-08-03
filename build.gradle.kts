@@ -45,7 +45,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 
 	//Hex
-	implementation("commons-codec:commons-codec:1.22.0")
+	implementation("commons-codec:commons-codec:1.22.1")
 
 	// Jakarta REST / Jersey (JAX-RS)
 	implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0")
