@@ -60,7 +60,7 @@ dependencies {
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 
 	// Cryptography
-	implementation("org.bouncycastle:bcprov-jdk18on:1.84")
+	implementation("org.bouncycastle:bcprov-jdk18on:1.85")
 
 	// Lombok
 	compileOnly("org.projectlombok:lombok")
