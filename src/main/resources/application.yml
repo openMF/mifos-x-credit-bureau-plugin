@@ -36,6 +36,7 @@ mifos:
         address: ${FINERACT_ADDRESS_URL:https://mifos-bank-1.mifos.community/fineract-provider/api/v1/clients/}
       username: ${FINERACT_USERNAME:mifos}
       password: ${FINERACT_PASSWORD:password}
+      tenant-identifier: ${FINERACT_TENANT_IDENTIFIER:default}
   security:
     encryption:
       key: ${MIFOS_SECURITY_ENCRYPTION_KEY}

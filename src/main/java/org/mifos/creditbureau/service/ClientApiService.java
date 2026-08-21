@@ -53,6 +53,9 @@ public class ClientApiService {
     @Value("${mifos.fineract.api.password}")
     private String password;
 
+    @Value("${mifos.fineract.api.tenant-identifier:default}")
+    private String tenantIdentifier;
+
     private final RestTemplate restTemplate;
 
     private static final ParameterizedTypeReference<List<FineractClientIdentifierResponse>>
@@ -263,7 +266,7 @@ public class ClientApiService {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization",
                 getBasicAuthenticationHeader(username, password));
-        headers.add("fineract-platform-tenantid", "default");
+        headers.add("fineract-platform-tenantid", tenantIdentifier);
         return headers;
     }
 
