@@ -85,10 +85,45 @@ public class ConsolidatedCreditReportService {
 
         // Mock mode for local development
         if (mockEnabled) {
-            log.info("Mock mode enabled — returning mock credit report");
+            log.info("Mock mode enabled — building mock credit report from Fineract client {}",
+                    clientId);
+            CBCreditReportData.Person.PersonBuilder person =
+                    CBCreditReportData.Person.builder();
+            try {
+                ClientData c = clientApiService.getClientData(clientId);
+                person.firstName(c.getFirstName())
+                        .lastName(c.getLastName())
+                        .taxId(c.getRfc())
+                        .nationality(c.getNationality())
+                        .gender(c.getGender())
+                        .maritalStatus(c.getMaritalStatus());
+            } catch (RuntimeException e) {
+                log.warn("Mock report: could not fetch client {} ({}); using generic sample person",
+                        clientId, e.getMessage());
+            }
+            String today = java.time.LocalDate.now().toString();
             return CBCreditReportData.builder()
                     .bureauName("Circulo de Credito (Mock)")
+                    .reportId("MOCK-" + clientId)
+                    .inquiryId("MOCK-INQ-" + clientId)
+                    .reportDate(today)
                     .country("MX")
+                    .currency("MXN")
+                    .person(person.build())
+                    .scores(List.of(CBCreditReportData.Score.builder()
+                            .scoreType("Bureau Score")
+                            .scoreValue(720)
+                            .scoreDate(today)
+                            .riskLevel("LOW")
+                            .build()))
+                    .creditAccounts(List.of(CBCreditReportData.CreditAccount.builder()
+                            .accountType("Credit Card")
+                            .creditorName("Demo Bank")
+                            .accountStatus("open")
+                            .creditLimit(50000)
+                            .currentBalance(12500)
+                            .currency("MXN")
+                            .build()))
                     .build();
         }
 
