@@ -36,6 +36,9 @@ public class CreditBureau {
     @Column(name = "country")
     private String country;
 
+    @Column(name = "bureau_type", nullable = false)
+    private String bureauType;
+
     @OneToOne(mappedBy = "creditBureau", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private CBRegisterParams creditBureauParameter;

@@ -7,5 +7,6 @@
 
     <!-- Include future changelog files here -->
      <include file="01-create-initial-schema.xml" relativeToChangelogFile="true"/>
-    
+     <include file="02-add-bureau-type-column.xml" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>

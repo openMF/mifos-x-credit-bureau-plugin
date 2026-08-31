@@ -22,6 +22,8 @@ public class CreditBureauData {
 
     private final String country;
 
+    private final String bureauType;
+
     private final Set<String> registrationParamKeys;
 
 
