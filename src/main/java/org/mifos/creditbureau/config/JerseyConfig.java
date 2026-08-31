@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class JerseyConfig extends ResourceConfig {
     
     public JerseyConfig() {
-        packages("org.mifos.creditbureau.api");
+        packages("org.mifos.creditbureau.api", "org.mifos.creditbureau.exception");
 
     }
 }
